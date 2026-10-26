@@ -1,30 +1,16 @@
 "use client";
 
 import Image from "next/image";
-import { motion, useReducedMotion, useScroll, useTransform, type Variants } from "framer-motion";
+import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 
 const navigation = [
-  ["О проекте", "#about"],
+  ["О проекте", "#philosophy"],
   ["Галерея", "#gallery"],
   ["Мастерская", "#workshop"],
   ["Выдержка", "#aging"],
   ["Использование", "#use"],
 ] as const;
-
-const stagger = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.25 } },
-} satisfies Variants;
-
-const reveal: Variants = {
-  hidden: { opacity: 0, y: 18 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 1.7, ease: [0.16, 1, 0.3, 1] },
-  },
-};
 
 const embers = Array.from({ length: 36 }, (_, index) => ({
   id: index,
@@ -50,6 +36,9 @@ export default function CinematicLanding() {
   const copyOpacity = useTransform(scrollYProgress, [0, 0.28], [1, 0]);
   const copyY = useTransform(scrollYProgress, [0, 0.28], [0, -30]);
   const overlayOpacity = useTransform(scrollYProgress, [0, 1], [0.23, 0.83]);
+  const scrollToPhilosophy = () => {
+    document.getElementById("philosophy")?.scrollIntoView({ behavior: "smooth" });
+  };
 
   return (
     <main ref={storyRef} className="cinematic-story">
@@ -96,60 +85,67 @@ export default function CinematicLanding() {
             </p>
           </div>
         </motion.div>
+
+        <button
+          type="button"
+          onClick={scrollToPhilosophy}
+          aria-label="Листать к философии"
+          className="absolute bottom-8 left-1/2 z-30 flex -translate-x-1/2 flex-col items-center gap-2 cursor-pointer group pointer-events-auto select-none px-5 py-2"
+        >
+          <span className="text-[11px] font-sans tracking-[0.25em] text-[#EDE8DF] group-hover:text-[#D49B5B] transition-colors duration-300">
+            ЛИСТАТЬ
+          </span>
+          <span aria-hidden="true" className="w-[1.5px] h-7 bg-gradient-to-b from-[#D49B5B] via-[#B87333]/80 to-transparent group-hover:translate-y-1 transition-transform duration-300" />
+        </button>
       </section>
 
       <motion.section
-        id="about"
-        className="philosophy"
+        id="philosophy"
+        className="philosophy pointer-events-none"
         aria-labelledby="philosophy-title"
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.18 }}
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.15 }}
+        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
       >
         <div className="philosophy__surface" aria-hidden="true" />
-        <div
-          className="philosophy__curtain pointer-events-none absolute inset-x-0 top-48 -mt-48 h-64 bg-gradient-to-b from-transparent via-[#141311]/75 to-[#141311]"
-          aria-hidden="true"
-        />
-        <div className="philosophy__embers pointer-events-none" aria-hidden="true">
+        <div className="philosophy__embers pointer-events-none absolute inset-0 z-0 overflow-hidden bg-transparent" aria-hidden="true">
           {embers.map(({ id, tone, style }) => (
             <span key={id} className={`ember ember--${tone}`} style={style} />
           ))}
         </div>
 
-        <div className="philosophy__inner">
-          <motion.div className="philosophy__copy" variants={stagger}>
-            <motion.h2 id="philosophy-title" className="philosophy__title philosophy__reveal" variants={reveal}>
+        <div className="philosophy__inner pointer-events-auto relative z-10 mx-auto w-full max-w-7xl px-6 py-24 lg:px-12">
+          <div className="philosophy__copy">
+            <h2 id="philosophy-title" className="mb-6 font-serif text-3xl text-[#EDE8DF] lg:text-4xl">
               Философия
-            </motion.h2>
-            <motion.blockquote className="philosophy__quote philosophy__reveal" variants={reveal}>
+            </h2>
+            <blockquote className="mb-8 border-l-2 border-[#B87333] pl-4 font-serif text-xl italic text-[#EDE8DF]/90 lg:text-2xl">
               «Качество — это делать всё правильно, даже когда никто не смотрит». — Генри Форд
-            </motion.blockquote>
-            <motion.div className="philosophy__body philosophy__reveal" variants={reveal}>
+            </blockquote>
+            <div className="space-y-4 font-sans text-sm leading-relaxed text-[#D1CBC0] lg:text-base">
               <p>
                 DP Barrel &amp; Spirit — ремесленное производство бочек из благородных пород дерева. Каждое изделие создаётся вручную: от выбора древесины до финальной отделки, гравировки и сборки.
               </p>
               <p>
                 Мы работаем с натуральными и экологически чистыми материалами, сохраняя живую текстуру дерева и индивидуальность каждой формы. На любой вкус, задачу и стиль — с неизменным вниманием к качеству и деталям.
               </p>
-            </motion.div>
-          </motion.div>
+            </div>
+          </div>
 
-          <motion.div className="philosophy__image-reveal philosophy__reveal" variants={reveal}>
+          <div className="philosophy__image-reveal">
             <div className="philosophy__image-frame group relative aspect-[4/5] overflow-hidden rounded-2xl border border-[#B87333]/20 transition-[border-color,box-shadow] duration-700 ease-out group-hover:border-[#D49B5B]/50 group-hover:shadow-[0_0_40px_-10px_rgba(184,115,51,0.25)]">
               <Image
                 src="/media/philosophy/2.png"
-                alt="Натуральная древесина и детали мастерской DP Barrel & Spirit"
+                alt="Дубовая бочка на резной подставке с гравированной кружкой"
                 fill
                 sizes="(max-width: 767px) 90vw, 42vw"
                 quality={90}
-                className="object-cover brightness-[0.88] contrast-[1.05] transition-transform duration-1000 ease-out group-hover:scale-[1.03]"
+                className="object-cover brightness-100 contrast-[1.02] transition-transform duration-1000 ease-out group-hover:scale-[1.03]"
               />
-              <div className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-t from-[#141311] via-[#141311]/25 to-transparent" />
-              <div className="pointer-events-none absolute inset-0 z-20 bg-[#141311] opacity-30 transition-opacity duration-700 ease-out group-hover:opacity-10" />
-              <div className="pointer-events-none absolute inset-0 z-20 bg-[radial-gradient(ellipse_at_center,transparent_40%,rgba(20,19,17,0.58)_100%)]" />
+              <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-[15%] bg-gradient-to-t from-[#141311]/25 to-transparent" />
             </div>
-          </motion.div>
+          </div>
         </div>
       </motion.section>
     </main>
