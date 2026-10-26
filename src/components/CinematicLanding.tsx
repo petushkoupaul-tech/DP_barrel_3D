@@ -44,7 +44,7 @@ export default function CinematicLanding() {
     <main ref={storyRef} className="cinematic-story">
       <section className="hero hero--sticky" aria-labelledby="hero-title">
         <video
-          className="hero__video"
+          className="hero__video brightness-[1.03]"
           autoPlay
           muted
           loop
@@ -101,7 +101,7 @@ export default function CinematicLanding() {
 
       <motion.section
         id="philosophy"
-        className="philosophy pointer-events-none"
+        className="philosophy pointer-events-none scroll-mt-20 lg:scroll-mt-24"
         aria-labelledby="philosophy-title"
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -114,16 +114,17 @@ export default function CinematicLanding() {
             <span key={id} className={`ember ember--${tone}`} style={style} />
           ))}
         </div>
+        <div className="pointer-events-none absolute left-0 right-0 top-0 z-10 h-36 bg-gradient-to-b from-transparent via-[#141311]/75 to-[#141311] lg:h-48" aria-hidden="true" />
 
-        <div className="philosophy__inner pointer-events-auto relative z-10 mx-auto w-full max-w-7xl px-6 py-24 lg:px-12">
-          <div className="philosophy__copy">
-            <h2 id="philosophy-title" className="mb-6 font-serif text-3xl text-[#EDE8DF] lg:text-4xl">
+        <div className="philosophy__inner pointer-events-auto relative z-10 mx-auto w-full max-w-7xl px-6 lg:px-12">
+          <div className="philosophy__copy -mt-8">
+            <h2 id="philosophy-title" className="mb-8 bg-gradient-to-r from-[#EDE8DF] via-[#D49B5B] to-[#B87333] bg-clip-text font-serif text-4xl font-medium leading-tight text-transparent drop-shadow-[0_2px_12px_rgba(212,155,91,0.25)] lg:mb-10 lg:text-[48px]">
               Философия
             </h2>
-            <blockquote className="mb-8 border-l-2 border-[#B87333] pl-4 font-serif text-xl italic text-[#EDE8DF]/90 lg:text-2xl">
+            <blockquote className="my-8 border-l-2 border-[#B87333] pl-5 font-serif text-2xl italic leading-snug text-[#EDE8DF]/95 lg:text-[26px]">
               «Качество — это делать всё правильно, даже когда никто не смотрит». — Генри Форд
             </blockquote>
-            <div className="space-y-4 font-sans text-sm leading-relaxed text-[#D1CBC0] lg:text-base">
+            <div className="space-y-5 font-sans text-base leading-relaxed text-[#D1CBC0] lg:text-[19px]">
               <p>
                 DP Barrel &amp; Spirit — ремесленное производство бочек из благородных пород дерева. Каждое изделие создаётся вручную: от выбора древесины до финальной отделки, гравировки и сборки.
               </p>
