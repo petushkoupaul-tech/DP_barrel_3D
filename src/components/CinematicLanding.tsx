@@ -143,6 +143,7 @@ export default function CinematicLanding() {
   const springY = useSpring(tiltY, { stiffness: 150, damping: 20 });
   const springScale = useSpring(cardScale, { stiffness: 150, damping: 20 });
   const [tiltEnabled, setTiltEnabled] = useState(false);
+  const [desktopReveal, setDesktopReveal] = useState(false);
   const { scrollYProgress } = useScroll({
     target: storyRef,
     offset: ["start start", "end end"],
@@ -151,6 +152,14 @@ export default function CinematicLanding() {
   const copyOpacity = useTransform(scrollYProgress, [0, 0.28], [1, 0]);
   const copyY = useTransform(scrollYProgress, [0, 0.28], [0, -30]);
   const overlayOpacity = useTransform(scrollYProgress, [0, 1], [0.23, 0.83]);
+  useEffect(() => {
+    const media = window.matchMedia("(min-width: 1024px)");
+    const updateRevealMode = () => setDesktopReveal(media.matches);
+    updateRevealMode();
+    media.addEventListener("change", updateRevealMode);
+    return () => media.removeEventListener("change", updateRevealMode);
+  }, []);
+
   useEffect(() => {
     const media = window.matchMedia("(min-width: 1024px) and (hover: hover) and (pointer: fine)");
     const updateTilt = () => setTiltEnabled(media.matches);
@@ -177,8 +186,10 @@ export default function CinematicLanding() {
   const scrollToPhilosophy = () => {
     const section = document.getElementById("philosophy");
     if (section) {
-      const targetPosition = section.getBoundingClientRect().top + window.pageYOffset - 80;
-      window.scrollTo({ top: targetPosition, behavior: "smooth" });
+      window.scrollTo({
+        top: section.offsetTop,
+        behavior: "smooth",
+      });
     }
   };
 
@@ -244,12 +255,8 @@ export default function CinematicLanding() {
       <motion.section
         ref={philosophyRef}
         id="philosophy"
-        className="philosophy pointer-events-none scroll-mt-20 lg:scroll-mt-24"
+        className="philosophy pointer-events-none min-h-screen pt-24 pb-20 flex flex-col justify-center"
         aria-labelledby="philosophy-title"
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.15 }}
-        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
       >
         <div className="philosophy__surface" aria-hidden="true" />
         <WorkshopSparks sectionRef={philosophyRef} />
@@ -257,23 +264,53 @@ export default function CinematicLanding() {
 
         <div className="philosophy__inner pointer-events-auto relative z-10 mx-auto w-full max-w-7xl px-6 lg:px-12">
           <div className="philosophy__copy -mt-8">
-            <h2 id="philosophy-title" className="mb-8 bg-gradient-to-r from-[#EDE8DF] via-[#D49B5B] to-[#B87333] bg-clip-text font-serif text-4xl font-medium leading-tight text-transparent drop-shadow-[0_2px_12px_rgba(212,155,91,0.25)] lg:mb-10 lg:text-[48px]">
+            <motion.h2
+              id="philosophy-title"
+              className="mb-8 bg-gradient-to-r from-[#EDE8DF] via-[#D49B5B] to-[#B87333] bg-clip-text font-serif text-4xl font-medium leading-tight text-transparent drop-shadow-[0_2px_12px_rgba(212,155,91,0.25)] lg:mb-10 lg:text-[48px]"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={desktopReveal ? { duration: 0.7, delay: 0.25 } : { duration: 0.5, delay: 0 }}
+            >
               Философия
-            </h2>
-            <blockquote className="my-8 border-l-2 border-[#B87333] pl-5 font-serif text-2xl italic leading-snug text-[#EDE8DF]/95 lg:text-[26px]">
+            </motion.h2>
+            <motion.blockquote
+              className="my-8 border-l-2 border-[#B87333] pl-5 font-serif text-2xl italic leading-snug text-[#EDE8DF]/95 lg:text-[26px]"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={desktopReveal ? { duration: 0.8, delay: 0.55 } : { duration: 0.5, delay: 0 }}
+            >
               «Качество — это делать всё правильно, даже когда никто не смотрит». — Генри Форд
-            </blockquote>
+            </motion.blockquote>
             <div className="space-y-5 font-sans text-base leading-relaxed text-[#D1CBC0] lg:text-[19px]">
-              <p>
+              <motion.p
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.2 }}
+                transition={desktopReveal ? { duration: 0.7, delay: 0.85 } : { duration: 0.5, delay: 0 }}
+              >
                 DP Barrel &amp; Spirit — ремесленное производство бочек из благородных пород дерева. Каждое изделие создаётся вручную: от выбора древесины до финальной отделки, гравировки и сборки.
-              </p>
-              <p>
+              </motion.p>
+              <motion.p
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.2 }}
+                transition={desktopReveal ? { duration: 0.7, delay: 1.15 } : { duration: 0.5, delay: 0 }}
+              >
                 Мы работаем с натуральными и экологически чистыми материалами, сохраняя живую текстуру дерева и индивидуальность каждой формы. На любой вкус, задачу и стиль — с неизменным вниманием к качеству и деталям.
-              </p>
+              </motion.p>
             </div>
           </div>
 
-          <div className="philosophy__image-reveal relative select-none" style={{ perspective: 1000 }}>
+          <motion.div
+            className="philosophy__image-reveal relative select-none"
+            style={{ perspective: 1000 }}
+            initial={{ opacity: 0, scale: 0.96 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={desktopReveal ? { duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.1 } : { duration: 0.5, delay: 0 }}
+          >
             <div className="group relative isolate select-none">
               <div className="pointer-events-none absolute -inset-4 -z-10 rounded-[32px] bg-gradient-to-tr from-[#B87333]/15 via-[#D49B5B]/10 to-transparent opacity-60 blur-2xl transition-opacity duration-700 group-hover:opacity-100" />
               <motion.div
@@ -295,7 +332,7 @@ export default function CinematicLanding() {
                 <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#141311]/60 via-[#141311]/20 to-transparent" />
               </motion.div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </motion.section>
     </main>
