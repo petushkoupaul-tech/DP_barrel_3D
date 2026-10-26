@@ -53,9 +53,8 @@ function WorkshopSparks({ sectionRef }: { sectionRef: RefObject<HTMLElement | nu
     });
 
     const resize = () => {
-      const bounds = section.getBoundingClientRect();
-      width = bounds.width;
-      height = bounds.height;
+      width = window.innerWidth;
+      height = window.innerHeight;
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
       canvas.width = Math.round(width * dpr);
       canvas.height = Math.round(height * dpr);
@@ -130,11 +129,12 @@ function WorkshopSparks({ sectionRef }: { sectionRef: RefObject<HTMLElement | nu
     };
   }, [sectionRef]);
 
-  return <canvas ref={canvasRef} className="pointer-events-none absolute inset-0 z-0 overflow-hidden bg-transparent" aria-hidden="true" />;
+  return <canvas ref={canvasRef} className="pointer-events-none fixed inset-0 z-[9] overflow-hidden bg-transparent" aria-hidden="true" />;
 }
 
 export default function CinematicLanding() {
   const storyRef = useRef<HTMLDivElement>(null);
+  const storySectionsRef = useRef<HTMLDivElement>(null);
   const philosophyRef = useRef<HTMLElement>(null);
   const reduceMotion = useReducedMotion();
   const tiltX = useMotionValue(0);
@@ -253,6 +253,8 @@ export default function CinematicLanding() {
         </button>
       </section>
 
+      <div ref={storySectionsRef} className="story-sections">
+      <WorkshopSparks sectionRef={storySectionsRef} />
       <motion.section
         ref={philosophyRef}
         id="philosophy"
@@ -260,7 +262,6 @@ export default function CinematicLanding() {
         aria-labelledby="philosophy-title"
       >
         <div className="philosophy__surface" aria-hidden="true" />
-        <WorkshopSparks sectionRef={philosophyRef} />
         <div className="pointer-events-none absolute left-0 right-0 top-0 z-10 h-36 bg-gradient-to-b from-transparent via-[#141311]/75 to-[#141311] lg:h-48" aria-hidden="true" />
 
         <div className="philosophy__inner pointer-events-auto relative z-10 mx-auto w-full max-w-7xl px-6 lg:px-12">
@@ -338,6 +339,7 @@ export default function CinematicLanding() {
       </motion.section>
 
       <CollectionSection />
+      </div>
     </main>
   );
 }

@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { useRef, useState, type TouchEvent } from "react";
+import { useRef, useState, type CSSProperties, type KeyboardEvent, type PointerEvent } from "react";
 
 const products = [
   ["10f00cd4-13f7-49a5-b02a-77f68b3a2dce.png", "Изделие из дуба с авторской отделкой"],
@@ -33,23 +33,56 @@ const specifications = [
 export default function CollectionSection() {
   const [index, setIndex] = useState(0);
   const [tab, setTab] = useState<"gallery" | "details">("gallery");
-  const touchStart = useRef<number | null>(null);
+  const [dragging, setDragging] = useState(false);
+  const [dragOffset, setDragOffset] = useState(0);
+  const drag = useRef<{ pointerId: number; startX: number; delta: number; pitch: number } | null>(null);
   const reduceMotion = useReducedMotion();
   const count = products.length;
-  const move = (direction: number) => setIndex((current) => (current + direction + count) % count);
-  const handleTouchStart = (event: TouchEvent<HTMLDivElement>) => { touchStart.current = event.touches[0]?.clientX ?? null; };
-  const handleTouchEnd = (event: TouchEvent<HTMLDivElement>) => {
-    if (touchStart.current === null) return;
-    const delta = (event.changedTouches[0]?.clientX ?? touchStart.current) - touchStart.current;
-    if (Math.abs(delta) > 42) move(delta < 0 ? 1 : -1);
-    touchStart.current = null;
+  const finishDrag = () => {
+    if (!drag.current) return;
+    const steps = Math.round(-drag.current.delta / drag.current.pitch);
+    drag.current = null;
+    setDragging(false);
+    setDragOffset(0);
+    if (steps) setIndex((current) => ((current + Math.max(-2, Math.min(2, steps))) % count + count) % count);
+  };
+  const handlePointerDown = (event: PointerEvent<HTMLDivElement>) => {
+    if (!event.isPrimary || (event.pointerType === "mouse" && event.button !== 0)) return;
+    if (!(event.target instanceof Element) || !event.target.closest(".collection__slide")) return;
+    const stage = event.currentTarget;
+    const slide = stage.querySelector<HTMLElement>(".collection__slide--active");
+    if (!slide) return;
+    drag.current = { pointerId: event.pointerId, startX: event.clientX, delta: 0, pitch: slide.getBoundingClientRect().width * 0.78 };
+    stage.setPointerCapture(event.pointerId);
+    setDragging(true);
+    if (event.pointerType === "mouse") event.preventDefault();
+  };
+  const handlePointerMove = (event: PointerEvent<HTMLDivElement>) => {
+    if (!drag.current || drag.current.pointerId !== event.pointerId) return;
+    drag.current.delta = event.clientX - drag.current.startX;
+    setDragOffset(drag.current.delta);
+  };
+  const handlePointerEnd = (event: PointerEvent<HTMLDivElement>) => {
+    if (drag.current?.pointerId !== event.pointerId) return;
+    finishDrag();
+  };
+  const handlePointerCancel = (event: PointerEvent<HTMLDivElement>) => {
+    if (drag.current?.pointerId !== event.pointerId) return;
+    drag.current = null;
+    setDragging(false);
+    setDragOffset(0);
+  };
+  const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === "ArrowLeft") { event.preventDefault(); setIndex((current) => (current - 1 + count) % count); }
+    if (event.key === "ArrowRight") { event.preventDefault(); setIndex((current) => (current + 1) % count); }
+    if (event.key === "Home") { event.preventDefault(); setIndex(0); }
+    if (event.key === "End") { event.preventDefault(); setIndex(count - 1); }
   };
 
   return (
     <section id="gallery" className="collection" aria-labelledby="collection-title">
       <div className="collection__inner">
         <motion.div className="collection__intro" initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.25 }} transition={{ duration: reduceMotion ? 0 : 0.7, ease: [0.22, 1, 0.36, 1] }}>
-          <p className="collection__eyebrow"><span /> DP BARREL &amp; SPIRIT</p>
           <h2 id="collection-title">Коллекция изделий</h2>
           <p>Каждое изделие создаётся вручную — от выбора материала до финальной отделки с вниманием ко всем деталям. Для покрытия поверхности применяются авторские технологии обработки, основанные на натуральных и долговечных материалах. Благодаря этой технике каждая бочка приобретает свой уникальный вид, а текстура дерева открывается с новой стороны.</p>
           <div className="collection__tabs" role="tablist" aria-label="Коллекция изделий">
@@ -61,22 +94,14 @@ export default function CollectionSection() {
         <AnimatePresence mode="wait" initial={false}>
           {tab === "gallery" ? (
             <motion.div key="gallery" className="collection__gallery" role="tabpanel" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: reduceMotion ? 0 : 0.45 }}>
-              <div className="collection__stage" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} aria-label="Галерея изделий. Проведите в сторону, чтобы сменить фотографию.">
-                {[-1, 0, 1].map((offset) => {
+              <div className={`collection__stage${dragging ? " collection__stage--dragging" : ""}`} style={{ "--collection-drag-offset": `${dragOffset}px` } as CSSProperties} onPointerDown={handlePointerDown} onPointerMove={handlePointerMove} onPointerUp={handlePointerEnd} onPointerCancel={handlePointerCancel} onKeyDown={handleKeyDown} role="group" tabIndex={0} aria-label="Галерея изделий. Перетаскивайте фотографии или используйте клавиши со стрелками.">
+                {[-2, -1, 0, 1, 2].map((offset) => {
                   const photoIndex = (index + offset + count) % count;
                   const [src, alt] = products[photoIndex];
-                  return <motion.figure key={`${photoIndex}-${offset}`} className={`collection__slide collection__slide--${offset === 0 ? "active" : offset < 0 ? "previous" : "next"}`} initial={{ opacity: 0, x: `${offset * 78}%` }} animate={{ opacity: offset === 0 ? 1 : 0.48, x: `${offset * 78}%`, scale: offset === 0 ? 1 : 0.82, rotate: offset * 1.5 }} transition={{ duration: reduceMotion ? 0 : 0.62, ease: [0.22, 1, 0.36, 1] }}>
-                    <Image src={`/media/collection/${encodeURIComponent(src)}`} alt={alt} fill sizes="(max-width: 700px) 84vw, 62vw" priority={index === photoIndex} quality={88} className="collection__image" />
+                  return <motion.figure key={photoIndex} className={`collection__slide collection__slide--${offset === 0 ? "active" : Math.abs(offset) === 1 ? offset < 0 ? "previous" : "next" : "distant"}`} style={{ "--collection-slide-offset": `${offset * 78}%` } as CSSProperties} initial={{ opacity: 0 }} animate={{ opacity: offset === 0 ? 1 : Math.abs(offset) === 1 ? 0.48 : 0.16, scale: offset === 0 ? 1 : Math.abs(offset) === 1 ? 0.82 : 0.68, rotate: Math.sign(offset) * (Math.abs(offset) === 1 ? 1.5 : 2) }} transition={{ duration: dragging || reduceMotion ? 0 : 0.62, ease: [0.22, 1, 0.36, 1] }}>
+                    <Image src={`/media/collection/${encodeURIComponent(src)}`} alt={alt} fill sizes="(max-width: 700px) 66vw, 50vw" priority={index === photoIndex} quality={88} draggable={false} className="collection__image" />
                   </motion.figure>;
                 })}
-              </div>
-              <div className="collection__controls">
-                <span className="collection__counter"><b>{String(index + 1).padStart(2, "0")}</b><i />{String(count).padStart(2, "0")}</span>
-                <p>Изделия, созданные вручную</p>
-                <div className="collection__arrows">
-                  <button type="button" aria-label="Предыдущее изделие" onClick={() => move(-1)}>←</button>
-                  <button type="button" aria-label="Следующее изделие" onClick={() => move(1)}>→</button>
-                </div>
               </div>
             </motion.div>
           ) : (
