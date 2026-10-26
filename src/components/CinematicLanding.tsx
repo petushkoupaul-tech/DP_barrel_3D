@@ -1,8 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
+import { motion, useMotionValue, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
+import { useEffect, useRef, useState, type MouseEvent as ReactMouseEvent, type RefObject } from "react";
 
 const navigation = [
   ["О проекте", "#philosophy"],
@@ -12,22 +12,137 @@ const navigation = [
   ["Использование", "#use"],
 ] as const;
 
-const embers = Array.from({ length: 36 }, (_, index) => ({
-  id: index,
-  tone: index % 3,
-  style: {
-    left: `${3 + ((index * 17) % 94)}%`,
-    bottom: `${4 + ((index * 11) % 82)}%`,
-    width: `${1 + ((index * 7) % 16) / 10}px`,
-    height: `${1 + ((index * 7) % 16) / 10}px`,
-    animationDuration: `${11 + ((index * 5) % 10)}s`,
-    animationDelay: `-${(index * 1.7) % 14}s`,
-  },
-}));
+const sparkColors = ["#D49B5B", "#B87333", "#E58A2B"];
+
+function WorkshopSparks({ sectionRef }: { sectionRef: RefObject<HTMLElement | null> }) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const section = sectionRef.current;
+    const context = canvas?.getContext("2d", { alpha: true });
+    if (!canvas || !section || !context) return;
+
+    type Spark = {
+      x: number;
+      y: number;
+      radius: number;
+      speed: number;
+      phase: number;
+      color: string;
+      glow: boolean;
+    };
+
+    let width = 0;
+    let height = 0;
+    let particles: Spark[] = [];
+    let frameId = 0;
+    let isVisible = false;
+    let lastTime = 0;
+
+    const random = (min: number, max: number) => min + Math.random() * (max - min);
+    const makeSpark = (y = random(0, height)) => ({
+      x: random(0, width),
+      y,
+      radius: random(1, 2.2),
+      speed: random(0.3, 0.85),
+      phase: random(0, Math.PI * 2),
+      color: sparkColors[Math.floor(Math.random() * sparkColors.length)],
+      glow: Math.random() < 0.3,
+    });
+
+    const resize = () => {
+      const bounds = section.getBoundingClientRect();
+      width = bounds.width;
+      height = bounds.height;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.round(width * dpr);
+      canvas.height = Math.round(height * dpr);
+      canvas.style.width = `${width}px`;
+      canvas.style.height = `${height}px`;
+      context.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const count = window.innerWidth >= 1024 ? 42 : 19;
+      particles = Array.from({ length: count }, () => makeSpark());
+    };
+
+    const draw = (time: number) => {
+      frameId = window.requestAnimationFrame(draw);
+      if (lastTime === 0) lastTime = time;
+      const frameScale = Math.min((time - lastTime) / 16.67, 2);
+      lastTime = time;
+      context.clearRect(0, 0, width, height);
+
+      for (const spark of particles) {
+        spark.y -= spark.speed * frameScale;
+        spark.x += Math.sin(time * 0.001 + spark.phase) * 0.35 * frameScale;
+        if (spark.y < -10) {
+          spark.x = random(0, width);
+          spark.y = height + 10;
+          spark.speed = random(0.3, 0.85);
+          spark.phase = random(0, Math.PI * 2);
+        }
+
+        context.globalAlpha = 0.45 + Math.sin(time * 0.0015 + spark.phase) * 0.3;
+        context.fillStyle = spark.color;
+        context.shadowBlur = spark.glow ? 5 : 0;
+        context.shadowColor = spark.glow ? "#D49B5B" : "transparent";
+        context.beginPath();
+        context.arc(spark.x, spark.y, spark.radius, 0, Math.PI * 2);
+        context.fill();
+      }
+      context.globalAlpha = 1;
+      context.shadowBlur = 0;
+    };
+
+    const start = () => {
+      if (!isVisible || frameId) return;
+      lastTime = 0;
+      frameId = window.requestAnimationFrame(draw);
+    };
+    const stop = () => {
+      if (!frameId) return;
+      window.cancelAnimationFrame(frameId);
+      frameId = 0;
+    };
+
+    resize();
+    const observer = new IntersectionObserver(([entry]) => {
+      isVisible = entry.isIntersecting;
+      if (isVisible) start();
+      else stop();
+    });
+    observer.observe(section);
+    const handleResize = () => {
+      resize();
+      if (isVisible) {
+        stop();
+        start();
+      }
+    };
+    window.addEventListener("resize", handleResize, { passive: true });
+
+    return () => {
+      stop();
+      observer.disconnect();
+      window.removeEventListener("resize", handleResize);
+      context.clearRect(0, 0, width, height);
+    };
+  }, [sectionRef]);
+
+  return <canvas ref={canvasRef} className="pointer-events-none absolute inset-0 z-0 overflow-hidden bg-transparent" aria-hidden="true" />;
+}
 
 export default function CinematicLanding() {
   const storyRef = useRef<HTMLDivElement>(null);
+  const philosophyRef = useRef<HTMLElement>(null);
   const reduceMotion = useReducedMotion();
+  const tiltX = useMotionValue(0);
+  const tiltY = useMotionValue(0);
+  const cardScale = useMotionValue(1);
+  const springX = useSpring(tiltX, { stiffness: 150, damping: 20 });
+  const springY = useSpring(tiltY, { stiffness: 150, damping: 20 });
+  const springScale = useSpring(cardScale, { stiffness: 150, damping: 20 });
+  const [tiltEnabled, setTiltEnabled] = useState(false);
   const { scrollYProgress } = useScroll({
     target: storyRef,
     offset: ["start start", "end end"],
@@ -36,8 +151,35 @@ export default function CinematicLanding() {
   const copyOpacity = useTransform(scrollYProgress, [0, 0.28], [1, 0]);
   const copyY = useTransform(scrollYProgress, [0, 0.28], [0, -30]);
   const overlayOpacity = useTransform(scrollYProgress, [0, 1], [0.23, 0.83]);
+  useEffect(() => {
+    const media = window.matchMedia("(min-width: 1024px) and (hover: hover) and (pointer: fine)");
+    const updateTilt = () => setTiltEnabled(media.matches);
+    updateTilt();
+    media.addEventListener("change", updateTilt);
+    return () => media.removeEventListener("change", updateTilt);
+  }, []);
+
+  const handleCardMouseMove = (event: ReactMouseEvent<HTMLDivElement>) => {
+    if (!tiltEnabled) return;
+    const bounds = event.currentTarget.getBoundingClientRect();
+    const normalizedX = (event.clientX - bounds.left) / bounds.width * 2 - 1;
+    const normalizedY = (event.clientY - bounds.top) / bounds.height * 2 - 1;
+    tiltX.set(-normalizedY * 5);
+    tiltY.set(normalizedX * 5);
+  };
+
+  const resetCardTilt = () => {
+    tiltX.set(0);
+    tiltY.set(0);
+    cardScale.set(1);
+  };
+
   const scrollToPhilosophy = () => {
-    document.getElementById("philosophy")?.scrollIntoView({ behavior: "smooth" });
+    const section = document.getElementById("philosophy");
+    if (section) {
+      const targetPosition = section.getBoundingClientRect().top + window.pageYOffset - 80;
+      window.scrollTo({ top: targetPosition, behavior: "smooth" });
+    }
   };
 
   return (
@@ -100,6 +242,7 @@ export default function CinematicLanding() {
       </section>
 
       <motion.section
+        ref={philosophyRef}
         id="philosophy"
         className="philosophy pointer-events-none scroll-mt-20 lg:scroll-mt-24"
         aria-labelledby="philosophy-title"
@@ -109,11 +252,7 @@ export default function CinematicLanding() {
         transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
       >
         <div className="philosophy__surface" aria-hidden="true" />
-        <div className="philosophy__embers pointer-events-none absolute inset-0 z-0 overflow-hidden bg-transparent" aria-hidden="true">
-          {embers.map(({ id, tone, style }) => (
-            <span key={id} className={`ember ember--${tone}`} style={style} />
-          ))}
-        </div>
+        <WorkshopSparks sectionRef={philosophyRef} />
         <div className="pointer-events-none absolute left-0 right-0 top-0 z-10 h-36 bg-gradient-to-b from-transparent via-[#141311]/75 to-[#141311] lg:h-48" aria-hidden="true" />
 
         <div className="philosophy__inner pointer-events-auto relative z-10 mx-auto w-full max-w-7xl px-6 lg:px-12">
@@ -134,17 +273,27 @@ export default function CinematicLanding() {
             </div>
           </div>
 
-          <div className="philosophy__image-reveal">
-            <div className="philosophy__image-frame group relative aspect-[4/5] overflow-hidden rounded-2xl border border-[#B87333]/20 transition-[border-color,box-shadow] duration-700 ease-out group-hover:border-[#D49B5B]/50 group-hover:shadow-[0_0_40px_-10px_rgba(184,115,51,0.25)]">
-              <Image
-                src="/media/philosophy/2.png"
-                alt="Дубовая бочка на резной подставке с гравированной кружкой"
-                fill
-                sizes="(max-width: 767px) 90vw, 42vw"
-                quality={90}
-                className="object-cover brightness-100 contrast-[1.02] transition-transform duration-1000 ease-out group-hover:scale-[1.03]"
-              />
-              <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-[15%] bg-gradient-to-t from-[#141311]/25 to-transparent" />
+          <div className="philosophy__image-reveal relative select-none" style={{ perspective: 1000 }}>
+            <div className="group relative isolate select-none">
+              <div className="pointer-events-none absolute -inset-4 -z-10 rounded-[32px] bg-gradient-to-tr from-[#B87333]/15 via-[#D49B5B]/10 to-transparent opacity-60 blur-2xl transition-opacity duration-700 group-hover:opacity-100" />
+              <motion.div
+                className="relative aspect-[4/5] overflow-hidden rounded-2xl border border-[#B87333]/20 transition-colors duration-500 group-hover:border-[#D49B5B]/40 lg:rounded-3xl"
+                style={{ rotateX: springX, rotateY: springY, scale: springScale, transformStyle: "preserve-3d" }}
+                onMouseMove={tiltEnabled ? handleCardMouseMove : undefined}
+                onMouseEnter={tiltEnabled ? () => cardScale.set(1.015) : undefined}
+                onMouseLeave={tiltEnabled ? resetCardTilt : undefined}
+              >
+                <Image
+                  src="/media/philosophy/2.png"
+                  alt="Дубовая бочка на резной подставке с гравированной кружкой"
+                  fill
+                  sizes="(max-width: 767px) 90vw, 42vw"
+                  quality={90}
+                  className="object-cover brightness-100 contrast-[1.02]"
+                />
+                <div className="pointer-events-none absolute inset-0 rounded-2xl ring-1 ring-inset ring-black/20 lg:rounded-3xl" />
+                <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#141311]/60 via-[#141311]/20 to-transparent" />
+              </motion.div>
             </div>
           </div>
         </div>
