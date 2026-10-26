@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { motion, useMotionValue, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
 import { useEffect, useRef, useState, type MouseEvent as ReactMouseEvent, type RefObject } from "react";
+import CollectionSection from "@/components/CollectionSection";
 
 const navigation = [
   ["О проекте", "#philosophy"],
@@ -335,6 +336,8 @@ export default function CinematicLanding() {
           </motion.div>
         </div>
       </motion.section>
+
+      <CollectionSection />
     </main>
   );
 }
