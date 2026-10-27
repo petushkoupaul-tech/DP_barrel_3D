@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { useRef, useState, type CSSProperties, type KeyboardEvent, type PointerEvent } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type KeyboardEvent, type PointerEvent } from "react";
 
 const products = [
   ["10f00cd4-13f7-49a5-b02a-77f68b3a2dce.png", "Изделие из дуба с авторской отделкой"],
@@ -30,14 +30,44 @@ const specifications = [
   { label: "Объёмы и детали", text: "От 2 до 70 литров. Краны и металлические элементы из пищевой нержавеющей стали." },
 ];
 
+const detailPhotos = [
+  ["1157d3f8-6ab9-463e-a34d-86faf9410282.png", "Детали резных деревянных изделий"],
+  ["20ecc047-15d2-47ca-b5ce-bf7c890db4ad.png", "Латунный кран и гравировка на дубовой бочке"],
+  ["5b848571-08cd-4a23-9560-a08e6f347cac.png", "Клеймо на древесине и металлические обручи"],
+  ["9d583cd1-83fe-4899-a828-61e2a67fd6de.png", "Текстура и обручи бочки на подставке"],
+  ["f1f40381-64d5-469e-97ba-b6ef42bc1579.png", "Гравированное донце и подставка бочки"],
+  ["fd1b69c6-6ba6-4b29-906c-1497911a89e9.png", "Дубовая бочка с латунным краном"],
+] as const;
+
 export default function CollectionSection() {
   const [index, setIndex] = useState(0);
   const [tab, setTab] = useState<"gallery" | "details">("gallery");
   const [dragging, setDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState(0);
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const lightboxRef = useRef<HTMLDivElement>(null);
+  const lightboxOpener = useRef<HTMLElement | null>(null);
   const drag = useRef<{ pointerId: number; startX: number; delta: number; pitch: number } | null>(null);
   const reduceMotion = useReducedMotion();
   const count = products.length;
+  const lightboxOpen = lightboxIndex !== null;
+  useEffect(() => {
+    if (!lightboxOpen) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    lightboxRef.current?.focus();
+    const handleLightboxKeys = (event: globalThis.KeyboardEvent) => {
+      if (event.key === "Escape") setLightboxIndex(null);
+      if (event.key === "ArrowLeft") setLightboxIndex((current) => current === null ? null : (current - 1 + detailPhotos.length) % detailPhotos.length);
+      if (event.key === "ArrowRight") setLightboxIndex((current) => current === null ? null : (current + 1) % detailPhotos.length);
+    };
+    window.addEventListener("keydown", handleLightboxKeys);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", handleLightboxKeys);
+      lightboxOpener.current?.focus();
+    };
+  }, [lightboxOpen]);
   const finishDrag = () => {
     if (!drag.current) return;
     const steps = Math.round(-drag.current.delta / drag.current.pitch);
@@ -106,12 +136,30 @@ export default function CollectionSection() {
             </motion.div>
           ) : (
             <motion.div key="details" className="collection__details" role="tabpanel" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: reduceMotion ? 0 : 0.45 }}>
-              {specifications.map((item, itemIndex) => <article className="collection__detail" key={item.label}><span>0{itemIndex + 1}</span><div><h3>{item.label}</h3><p>{item.text}</p></div></article>)}
-              <div className="collection__detail-photo"><Image src={`/media/collection/${encodeURIComponent(products[index][0])}`} alt={products[index][1]} fill sizes="(max-width: 700px) 90vw, 40vw" quality={85} className="collection__image" /></div>
+              <div className="collection__details-copy">
+                {specifications.map((item, itemIndex) => <article className="collection__detail" key={item.label}><span>0{itemIndex + 1}</span><div><h3>{item.label}</h3><p>{item.text}</p></div></article>)}
+              </div>
+              <div className="collection__collage" aria-label="Фотографии изделий и деталей">
+                {detailPhotos.map(([src, alt], photoIndex) => <motion.button type="button" key={src} className={`collection__photo collection__photo--${photoIndex + 1}`} aria-label={`Открыть фотографию: ${alt}`} onClick={(event) => { lightboxOpener.current = event.currentTarget; setLightboxIndex(photoIndex); }} initial={{ opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.15 }} whileHover={{ filter: "brightness(1.06)" }} transition={{ duration: reduceMotion ? 0 : 0.55, delay: reduceMotion ? 0 : photoIndex * 0.055, ease: [0.22, 1, 0.36, 1] }}>
+                  <Image src={`/media/collection/details/${src}`} alt={alt} fill sizes="(max-width: 700px) 45vw, 12vw" quality={88} className="collection__photo-image" />
+                </motion.button>)}
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
       </div>
+      <AnimatePresence>
+        {lightboxIndex !== null && <motion.div ref={lightboxRef} className="collection__lightbox" role="dialog" aria-modal="true" aria-label="Просмотр фотографий изделий" tabIndex={-1} onClick={() => setLightboxIndex(null)} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: reduceMotion ? 0 : 0.22 }}>
+          <div className="collection__lightbox-content" onClick={(event) => event.stopPropagation()}>
+            <button type="button" className="collection__lightbox-close" onClick={() => setLightboxIndex(null)} aria-label="Закрыть просмотр">×</button>
+            <button type="button" className="collection__lightbox-arrow collection__lightbox-arrow--previous" onClick={() => setLightboxIndex((current) => current === null ? null : (current - 1 + detailPhotos.length) % detailPhotos.length)} aria-label="Предыдущее фото">←</button>
+            <div className="collection__lightbox-image">
+              <Image src={`/media/collection/details/${detailPhotos[lightboxIndex][0]}`} alt={detailPhotos[lightboxIndex][1]} fill sizes="94vw" quality={90} className="collection__lightbox-img" />
+            </div>
+            <button type="button" className="collection__lightbox-arrow collection__lightbox-arrow--next" onClick={() => setLightboxIndex((current) => current === null ? null : (current + 1) % detailPhotos.length)} aria-label="Следующее фото">→</button>
+          </div>
+        </motion.div>}
+      </AnimatePresence>
     </section>
   );
 }

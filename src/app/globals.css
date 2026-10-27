@@ -134,12 +134,31 @@ h1 em { color: inherit; font-weight: 500; }
 .collection__slide--next { z-index: 1; }
 .collection__slide--active { z-index: 2; }
 .collection__image { object-fit: contain; }
-.collection__details { display: grid; grid-template-columns: minmax(0, 1fr) minmax(280px, .82fr); align-items: stretch; gap: clamp(28px, 6vw, 80px); min-height: 430px; }
+.collection__details { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); align-items: center; gap: clamp(28px, 5vw, 72px); }
+.collection__details-copy { min-width: 0; }
 .collection__detail { display: grid; grid-template-columns: 48px 1fr; gap: 16px; padding: 25px 0; border-bottom: 1px solid rgba(158,152,143,.22); }
 .collection__detail > span { color: var(--copper); font-size: 11px; letter-spacing: .12em; }
 .collection__detail h3 { margin: -5px 0 10px; color: var(--ivory); font-family: 'Playfair Display', Georgia, serif; font-size: 24px; font-weight: 500; }
 .collection__detail p { margin: 0; color: var(--canvas); font-size: 14px; line-height: 1.8; }
-.collection__detail-photo { position: relative; min-height: 100%; overflow: hidden; border: 1px solid rgba(212,155,91,.2); background: #1b1915; }
+.collection__collage { min-width: 0; column-count: 3; column-gap: 0; column-fill: balance; }
+.collection__photo { position: relative; display: block; width: 100%; min-width: 0; overflow: hidden; padding: 0; border: 0; background: transparent; break-inside: avoid; cursor: zoom-in; }
+.collection__photo:focus-visible { outline: 1px solid var(--honey); outline-offset: 3px; }
+.collection__photo--1 { aspect-ratio: 1 / 1; }
+.collection__photo--2 { aspect-ratio: 946 / 1662; }
+.collection__photo--3 { aspect-ratio: 3 / 2; }
+.collection__photo--4 { aspect-ratio: 1606 / 979; }
+.collection__photo--5 { aspect-ratio: 1105 / 1424; }
+.collection__photo--6 { aspect-ratio: 1155 / 1362; }
+.collection__photo-image { object-fit: cover; }
+.collection__lightbox { position: fixed; z-index: 100; inset: 0; display: grid; place-items: center; padding: 24px; background: rgba(12,11,10,.94); }
+.collection__lightbox:focus { outline: none; }
+.collection__lightbox-content { position: relative; display: grid; width: min(100%, 1320px); height: min(88vh, 900px); grid-template-columns: 56px minmax(0, 1fr) 56px; align-items: center; gap: 18px; }
+.collection__lightbox-image { position: relative; width: 100%; height: 100%; }
+.collection__lightbox-img { object-fit: contain; }
+.collection__lightbox-close, .collection__lightbox-arrow { display: grid; place-items: center; border: 1px solid rgba(212,155,91,.55); border-radius: 50%; background: rgba(20,19,17,.8); color: var(--ivory); cursor: pointer; transition: border-color .25s ease, color .25s ease, background .25s ease; }
+.collection__lightbox-close:hover, .collection__lightbox-arrow:hover { border-color: var(--honey); background: rgba(184,115,51,.18); color: var(--honey); }
+.collection__lightbox-close { position: absolute; z-index: 2; top: -12px; right: -12px; width: 46px; height: 46px; font-size: 28px; line-height: 1; }
+.collection__lightbox-arrow { width: 48px; height: 48px; font-size: 21px; }
 @media (max-width: 700px) {
   .collection { padding: 80px 18px 88px; }
   .collection__intro { margin-bottom: 34px; }
@@ -147,8 +166,15 @@ h1 em { color: inherit; font-weight: 500; }
   .collection__tabs { gap: 28px; margin-top: 24px; }
   .collection__stage { height: clamp(300px, 86vw, 400px); }
   .collection__slide { width: 66%; }
-  .collection__details { grid-template-columns: 1fr; gap: 24px; }
-  .collection__detail-photo { min-height: 360px; }
+  .collection__details { grid-template-columns: 1fr; gap: 30px; }
+  .collection__collage { column-count: 2; }
+  .collection__lightbox { padding: 14px; }
+  .collection__lightbox-content { display: block; width: 100%; height: 86vh; }
+  .collection__lightbox-image { height: 100%; }
+  .collection__lightbox-close { top: 8px; right: 8px; }
+  .collection__lightbox-arrow { position: absolute; z-index: 2; top: 50%; width: 42px; height: 42px; transform: translateY(-50%); }
+  .collection__lightbox-arrow--previous { left: 8px; }
+  .collection__lightbox-arrow--next { right: 8px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .collection__tabs button, .collection__slide { transition-duration: .01ms; }
