@@ -83,7 +83,7 @@ export default function CollectionSection() {
     <section id="gallery" className="collection" aria-labelledby="collection-title">
       <div className="collection__inner">
         <motion.div className="collection__intro" initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.25 }} transition={{ duration: reduceMotion ? 0 : 0.7, ease: [0.22, 1, 0.36, 1] }}>
-          <h2 id="collection-title">Коллекция изделий</h2>
+          <h2 id="collection-title" className="mb-0 bg-gradient-to-r from-[#EDE8DF] via-[#D49B5B] to-[#B87333] bg-clip-text font-serif text-4xl font-medium leading-tight text-transparent drop-shadow-[0_2px_12px_rgba(212,155,91,0.25)] lg:text-[48px]">Коллекция изделий</h2>
           <p>Каждое изделие создаётся вручную — от выбора материала до финальной отделки с вниманием ко всем деталям. Для покрытия поверхности применяются авторские технологии обработки, основанные на натуральных и долговечных материалах. Благодаря этой технике каждая бочка приобретает свой уникальный вид, а текстура дерева открывается с новой стороны.</p>
           <div className="collection__tabs" role="tablist" aria-label="Коллекция изделий">
             <button role="tab" aria-selected={tab === "gallery"} onClick={() => setTab("gallery")}>Галерея</button>

@@ -117,8 +117,8 @@ h1 em { color: inherit; font-weight: 500; }
 .collection { position: relative; overflow: hidden; padding: clamp(84px, 10vw, 148px) clamp(20px, 6vw, 96px) clamp(88px, 10vw, 148px); background: #141311; }
 .collection__inner { position: relative; z-index: 10; width: min(100%, 1320px); margin: 0 auto; }
 .collection__intro { max-width: 860px; margin: 0 auto 48px; text-align: center; }
-.collection__intro h2 { margin: 0; color: var(--ivory); font-family: 'Playfair Display', Georgia, serif; font-size: clamp(38px, 5vw, 62px); font-weight: 500; line-height: 1.12; }
-.collection__intro > p { max-width: 760px; margin: 22px auto 0; color: var(--canvas); font-size: 15px; line-height: 1.9; }
+.collection__intro h2 { margin: 0; }
+.collection__intro > p { max-width: 760px; margin: 22px auto 0; color: var(--canvas); font-size: 15px; line-height: 1.85; }
 .collection__tabs { display: flex; justify-content: center; gap: 34px; margin-top: 30px; border-bottom: 1px solid rgba(158,152,143,.24); }
 .collection__tabs button { position: relative; padding: 0 2px 13px; border: 0; background: transparent; color: rgba(209,203,192,.72); font: inherit; cursor: pointer; transition: color .25s ease; }
 .collection__tabs button[aria-selected="true"] { color: var(--honey); }
