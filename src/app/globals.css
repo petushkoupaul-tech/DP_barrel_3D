@@ -140,8 +140,8 @@ h1 em { color: inherit; font-weight: 500; }
 .collection__detail > span { color: var(--copper); font-size: 11px; letter-spacing: .12em; }
 .collection__detail h3 { margin: -5px 0 10px; color: var(--ivory); font-family: 'Playfair Display', Georgia, serif; font-size: 24px; font-weight: 500; }
 .collection__detail p { margin: 0; color: var(--canvas); font-size: 14px; line-height: 1.8; }
-.collection__collage { min-width: 0; column-count: 3; column-gap: 0; column-fill: balance; }
-.collection__photo { position: relative; display: block; width: 100%; min-width: 0; overflow: hidden; padding: 0; border: 0; background: transparent; break-inside: avoid; cursor: zoom-in; }
+.collection__collage { min-width: 0; column-count: 3; column-gap: 8px; column-fill: balance; }
+.collection__photo { position: relative; display: block; width: 100%; min-width: 0; overflow: hidden; margin: 0 0 8px; padding: 0; border: 0; background: transparent; break-inside: avoid; cursor: zoom-in; }
 .collection__photo:focus-visible { outline: 1px solid var(--honey); outline-offset: 3px; }
 .collection__photo--1 { aspect-ratio: 1 / 1; }
 .collection__photo--2 { aspect-ratio: 946 / 1662; }
@@ -149,7 +149,8 @@ h1 em { color: inherit; font-weight: 500; }
 .collection__photo--4 { aspect-ratio: 1606 / 979; }
 .collection__photo--5 { aspect-ratio: 1105 / 1424; }
 .collection__photo--6 { aspect-ratio: 1155 / 1362; }
-.collection__photo-image { object-fit: cover; }
+.collection__photo-image { object-fit: cover; transition: transform .65s cubic-bezier(.22,1,.36,1), filter .65s ease; }
+.collection__photo:hover .collection__photo-image { transform: scale(1.035); filter: brightness(1.06); }
 .collection__lightbox { position: fixed; z-index: 100; inset: 0; display: grid; place-items: center; padding: 24px; background: rgba(12,11,10,.94); }
 .collection__lightbox:focus { outline: none; }
 .collection__lightbox-content { position: relative; display: grid; width: min(100%, 1320px); height: min(88vh, 900px); grid-template-columns: 56px minmax(0, 1fr) 56px; align-items: center; gap: 18px; }

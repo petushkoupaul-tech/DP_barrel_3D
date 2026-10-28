@@ -140,7 +140,7 @@ export default function CollectionSection() {
                 {specifications.map((item, itemIndex) => <article className="collection__detail" key={item.label}><span>0{itemIndex + 1}</span><div><h3>{item.label}</h3><p>{item.text}</p></div></article>)}
               </div>
               <div className="collection__collage" aria-label="Фотографии изделий и деталей">
-                {detailPhotos.map(([src, alt], photoIndex) => <motion.button type="button" key={src} className={`collection__photo collection__photo--${photoIndex + 1}`} aria-label={`Открыть фотографию: ${alt}`} onClick={(event) => { lightboxOpener.current = event.currentTarget; setLightboxIndex(photoIndex); }} initial={{ opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.15 }} whileHover={{ filter: "brightness(1.06)" }} transition={{ duration: reduceMotion ? 0 : 0.55, delay: reduceMotion ? 0 : photoIndex * 0.055, ease: [0.22, 1, 0.36, 1] }}>
+                {detailPhotos.map(([src, alt], photoIndex) => <motion.button type="button" key={src} className={`collection__photo collection__photo--${photoIndex + 1}`} aria-label={`Открыть фотографию: ${alt}`} onClick={(event) => { lightboxOpener.current = event.currentTarget; setLightboxIndex(photoIndex); }} initial={{ opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.15 }} transition={{ duration: reduceMotion ? 0 : 0.55, delay: reduceMotion ? 0 : photoIndex * 0.055, ease: [0.22, 1, 0.36, 1] }}>
                   <Image src={`/media/collection/details/${src}`} alt={alt} fill sizes="(max-width: 700px) 45vw, 12vw" quality={88} className="collection__photo-image" />
                 </motion.button>)}
               </div>
