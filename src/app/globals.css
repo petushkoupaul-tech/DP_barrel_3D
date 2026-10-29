@@ -143,8 +143,8 @@ h1 em { color: inherit; font-weight: 500; }
 .collection__collage { min-width: 0; column-count: 3; column-gap: 8px; column-fill: balance; }
 .collection__photo { position: relative; display: block; width: 100%; min-width: 0; overflow: hidden; margin: 0 0 8px; padding: 0; border: 0; background: transparent; break-inside: avoid; cursor: zoom-in; }
 .collection__photo:focus-visible { outline: 1px solid var(--honey); outline-offset: 3px; }
-.collection__photo--1 { aspect-ratio: 1 / 1; }
-.collection__photo--2 { aspect-ratio: 946 / 1662; }
+.collection__photo--1 { aspect-ratio: 1086 / 1448; }
+.collection__photo--2 { aspect-ratio: 1 / 1; }
 .collection__photo--3 { aspect-ratio: 3 / 2; }
 .collection__photo--4 { aspect-ratio: 1606 / 979; }
 .collection__photo--5 { aspect-ratio: 1105 / 1424; }
