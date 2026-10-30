@@ -26,12 +26,17 @@ const workshopPhotos: readonly WorkshopPhoto[] = [
   { src: workshopSix, alt: "Сборка остова и натяжка обручей", position: "50% 50%" },
 ];
 
-function GalleryPhoto({ photo, position, reducedMotion, onActivate }: { photo: WorkshopPhoto; position: number; reducedMotion: boolean; onActivate: () => void }) {
-  const offsets = [[0, 0, 0], [18, -16, -1.2], [35, -31, 1.1], [53, -45, -1.8], [70, -59, 1.5], [87, -72, -1]] as const;
-  const [x, y, rotate] = offsets[position];
+function GalleryPhoto({ photo, photoIndex, position, reducedMotion, onActivate }: { photo: WorkshopPhoto; photoIndex: number; position: number; reducedMotion: boolean; onActivate: () => void }) {
+  const offsets = [0, 58, 96, 118, -96, -58] as const;
+  const tiltAngles = [-1.4, 1.1, -0.9, 1.5, -1.2, 0.8] as const;
+  const x = offsets[position];
+  const rotate = tiltAngles[photoIndex];
+  const depth = position === 0 ? 60 : -Math.min(position, 6 - position) * 42;
+  const scale = position === 0 ? 1 : 0.88 - Math.min(position, 6 - position) * 0.025;
+  const opacity = position === 0 ? 1 : position === 3 ? 0.46 : 0.82;
   return (
     <motion.button type="button" className={`workshop__photo${position === 0 ? " workshop__photo--active" : ""}`} onClick={position === 0 ? onActivate : undefined} aria-label={position === 0 ? `${photo.alt}. Нажмите, чтобы показать следующую фотографию` : photo.alt} aria-hidden={position !== 0} tabIndex={position === 0 ? 0 : -1}
-      animate={reducedMotion ? { x: position * 9, y: position * -9, z: -position * 8, scale: 1, opacity: 1, rotate: 0 } : { x, y, z: -position * 18, scale: 1 - position * 0.008, opacity: 1, rotate }}
+      animate={reducedMotion ? { x: `${x}%`, z: 0, scale: 1, opacity, rotate: 0 } : { x: `${x}%`, z: depth, scale, opacity, rotate }}
       transition={{ duration: reducedMotion ? 0.01 : 0.66, ease: [0.22, 1, 0.36, 1] }} style={{ zIndex: 20 - position }}>
       <Image
         src={photo.src}
@@ -48,11 +53,10 @@ function GalleryPhoto({ photo, position, reducedMotion, onActivate }: { photo: W
 
 export default function WorkshopGallery() {
   const reducedMotion = useReducedMotion();
-  const [stack, setStack] = useState(workshopPhotos.map((_, i) => i));
+  const [index, setIndex] = useState(0);
   const [locked, setLocked] = useState(false);
-  const timer = (delta: number) => { if (locked) return; setLocked(true); setStack(current => delta > 0 ? [...current.slice(1), current[0]] : [current[current.length - 1], ...current.slice(0, -1)]); window.setTimeout(() => setLocked(false), reducedMotion ? 10 : 610); };
+  const timer = (delta: number) => { if (locked) return; setLocked(true); setIndex(current => (current + delta + workshopPhotos.length) % workshopPhotos.length); window.setTimeout(() => setLocked(false), reducedMotion ? 10 : 690); };
   const keyDown = (event: KeyboardEvent<HTMLDivElement>) => { if (event.key === "ArrowRight") { event.preventDefault(); timer(1); } if (event.key === "ArrowLeft") { event.preventDefault(); timer(-1); } };
-  const index = stack[0];
 
   return (
     <section id="workshop" className={`workshop${reducedMotion ? " workshop--reduced-motion" : ""}`} aria-labelledby="workshop-title">
@@ -66,16 +70,14 @@ export default function WorkshopGallery() {
           </ol>
         </div>
 
-        <div className="workshop__gallery" aria-label="Шесть фотографий мастерской">
-          <div className="workshop__gallery-depth">
-            {stack.map((photoIndex, position) => (
-              <GalleryPhoto key={workshopPhotos[photoIndex].src.src} photo={workshopPhotos[photoIndex]} position={position} reducedMotion={Boolean(reducedMotion)} onActivate={() => timer(1)} />
-            ))}
-          </div>
-          <div className="workshop__interaction" onKeyDown={keyDown} tabIndex={0} role="group" aria-label={`Галерея мастерской, фотография ${index + 1} из 6`} aria-roledescription="галерея">
-            <button type="button" className="workshop__arrow" onClick={() => timer(-1)} disabled={locked} aria-label="Предыдущая фотография">←</button>
-            <p className="workshop__progress" aria-live="polite">0{index + 1} — 06</p>
-            <button type="button" className="workshop__arrow" onClick={() => timer(1)} disabled={locked} aria-label="Следующая фотография">→</button>
+        <div className="workshop__gallery" aria-label="Галерея фотографий мастерской">
+          <div className="workshop__gallery-depth" onKeyDown={keyDown} tabIndex={0} role="group" aria-label={`Фотография ${index + 1} из 6`} aria-roledescription="галерея">
+            {workshopPhotos.map((photo, photoIndex) => {
+              const position = (photoIndex - index + workshopPhotos.length) % workshopPhotos.length;
+              return <GalleryPhoto key={photo.src.src} photo={photo} photoIndex={photoIndex} position={position} reducedMotion={Boolean(reducedMotion)} onActivate={() => timer(1)} />;
+            })}
+            <button type="button" className="workshop__arrow workshop__arrow--previous" onClick={() => timer(-1)} disabled={locked} aria-label="Предыдущая фотография">←</button>
+            <button type="button" className="workshop__arrow workshop__arrow--next" onClick={() => timer(1)} disabled={locked} aria-label="Следующая фотография">→</button>
           </div>
         </div>
       </div>
