@@ -27,12 +27,12 @@ const workshopPhotos: readonly WorkshopPhoto[] = [
 ];
 
 function GalleryPhoto({ photo, position, reducedMotion, onActivate }: { photo: WorkshopPhoto; position: number; reducedMotion: boolean; onActivate: () => void }) {
-  const x = position === 0 ? 0 : (position % 2 ? 1 : -1) * Math.ceil(position / 2) * 13;
-  const y = position * 13;
+  const offsets = [[0, 0, 0], [18, -16, -1.2], [35, -31, 1.1], [53, -45, -1.8], [70, -59, 1.5], [87, -72, -1]] as const;
+  const [x, y, rotate] = offsets[position];
   return (
     <motion.button type="button" className={`workshop__photo${position === 0 ? " workshop__photo--active" : ""}`} onClick={position === 0 ? onActivate : undefined} aria-label={position === 0 ? `${photo.alt}. Нажмите, чтобы показать следующую фотографию` : photo.alt} aria-hidden={position !== 0} tabIndex={position === 0 ? 0 : -1}
-      animate={reducedMotion ? { x: 0, y: 0, z: 0, scale: 1, opacity: position < 4 ? 1 : 0 } : { x, y, z: -position * 34, scale: 1 - position * 0.025, opacity: position < 5 ? 1 : 0, rotate: (position % 2 ? 1 : -1) * Math.min(position, 3) * 0.6 }}
-      transition={{ duration: reducedMotion ? 0.01 : 0.6, ease: [0.22, 1, 0.36, 1] }} style={{ zIndex: 10 - position }}>
+      animate={reducedMotion ? { x: position * 9, y: position * -9, z: -position * 8, scale: 1, opacity: 1, rotate: 0 } : { x, y, z: -position * 18, scale: 1 - position * 0.008, opacity: 1, rotate }}
+      transition={{ duration: reducedMotion ? 0.01 : 0.66, ease: [0.22, 1, 0.36, 1] }} style={{ zIndex: 20 - position }}>
       <Image
         src={photo.src}
         alt={photo.alt}
@@ -58,13 +58,11 @@ export default function WorkshopGallery() {
     <section id="workshop" className={`workshop${reducedMotion ? " workshop--reduced-motion" : ""}`} aria-labelledby="workshop-title">
       <div className="workshop__inner">
         <div className="workshop__copy">
-          <h2 id="workshop-title">Мастерская<br />и ремесло</h2>
-          <p>Путь бочки начинается с древесины. Отбор материала, подготовка клёпок, обработка, сборка и обжиг формируют конструкцию и подготавливают дерево к дальнейшему использованию.</p>
-          <p className="workshop__accent">Важна каждая деталь: точность соединений, свойства древесины и степень обжига. Именно сочетание этих факторов определяет характер готового изделия.</p>
+          <motion.h2 id="workshop-title" initial={reducedMotion ? false : { opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.2 }} transition={{ duration: reducedMotion ? 0 : 0.55, ease: [0.22, 1, 0.36, 1] }}>Мастерская<br />и ремесло</motion.h2>
+          <motion.p initial={reducedMotion ? false : { opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.2 }} transition={{ duration: reducedMotion ? 0 : 0.5, delay: reducedMotion ? 0 : 0.12 }}>Путь бочки начинается с древесины. Отбор материала, подготовка клёпок, обработка, сборка и обжиг формируют конструкцию и подготавливают дерево к дальнейшему использованию.</motion.p>
+          <motion.p className="workshop__accent" initial={reducedMotion ? false : { opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.2 }} transition={{ duration: reducedMotion ? 0 : 0.5, delay: reducedMotion ? 0 : 0.22 }}>Важна каждая деталь: точность соединений, свойства древесины и степень обжига. Именно сочетание этих факторов определяет характер готового изделия.</motion.p>
           <ol className="workshop__stages">
-            <li>Отбор древесины и подготовка заготовок</li>
-            <li>Сборка остова и натяжка обручей</li>
-            <li>Контролируемый обжиг живым огнем</li>
+            {["Отбор древесины и подготовка заготовок", "Сборка остова и натяжка обручей", "Контролируемый обжиг живым огнем"].map((stage, i) => <motion.li key={stage} initial={reducedMotion ? false : { opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.2 }} transition={{ duration: reducedMotion ? 0 : 0.45, delay: reducedMotion ? 0 : 0.32 + i * 0.1 }}>{stage}</motion.li>)}
           </ol>
         </div>
 
@@ -76,7 +74,6 @@ export default function WorkshopGallery() {
           </div>
           <div className="workshop__interaction" onKeyDown={keyDown} tabIndex={0} role="group" aria-label={`Галерея мастерской, фотография ${index + 1} из 6`} aria-roledescription="галерея">
             <button type="button" className="workshop__arrow" onClick={() => timer(-1)} disabled={locked} aria-label="Предыдущая фотография">←</button>
-            <p className="workshop__hint">Нажмите на фотографию, чтобы продолжить</p>
             <p className="workshop__progress" aria-live="polite">0{index + 1} — 06</p>
             <button type="button" className="workshop__arrow" onClick={() => timer(1)} disabled={locked} aria-label="Следующая фотография">→</button>
           </div>
