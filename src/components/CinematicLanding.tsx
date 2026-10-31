@@ -130,7 +130,7 @@ function WorkshopSparks({ sectionRef }: { sectionRef: RefObject<HTMLElement | nu
     };
   }, [sectionRef]);
 
-  return <canvas ref={canvasRef} className="pointer-events-none fixed inset-0 z-[9] overflow-hidden bg-transparent" aria-hidden="true" />;
+  return <canvas ref={canvasRef} className="pointer-events-none fixed inset-0 z-[5] overflow-hidden bg-transparent" aria-hidden="true" />;
 }
 
 export default function CinematicLanding() {

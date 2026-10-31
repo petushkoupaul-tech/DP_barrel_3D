@@ -2,7 +2,7 @@
 
 import Image, { type StaticImageData } from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
-import { useState, type KeyboardEvent } from "react";
+import { useEffect, useState, type KeyboardEvent } from "react";
 
 import workshopOne from "../../медиа/4 мастерская и производство/1.png";
 import workshopTwo from "../../медиа/4 мастерская и производство/2.png";
@@ -26,14 +26,17 @@ const workshopPhotos: readonly WorkshopPhoto[] = [
   { src: workshopSix, alt: "Сборка остова и натяжка обручей", position: "50% 50%" },
 ];
 
-function GalleryPhoto({ photo, photoIndex, position, reducedMotion, onActivate }: { photo: WorkshopPhoto; photoIndex: number; position: number; reducedMotion: boolean; onActivate: () => void }) {
+function GalleryPhoto({ photo, photoIndex, position, reducedMotion, desktopGallery, onActivate }: { photo: WorkshopPhoto; photoIndex: number; position: number; reducedMotion: boolean; desktopGallery: boolean; onActivate: () => void }) {
   const offsets = [0, 58, 96, 118, -96, -58] as const;
-  const tiltAngles = [-1.4, 1.1, -0.9, 1.5, -1.2, 0.8] as const;
+  const mobileTiltAngles = [-1.4, 1.1, -0.9, 1.5, -1.2, 0.8] as const;
+  const desktopTiltAngles = [-1.1, 0.9, -0.8, 1.2, -1, 0.7] as const;
   const x = offsets[position];
-  const rotate = tiltAngles[photoIndex];
-  const depth = position === 0 ? 60 : -Math.min(position, 6 - position) * 42;
-  const scale = position === 0 ? 1 : 0.88 - Math.min(position, 6 - position) * 0.025;
-  const opacity = position === 0 ? 1 : position === 3 ? 0.46 : 0.82;
+  const distance = Math.min(position, 6 - position);
+  const rotate = (desktopGallery ? desktopTiltAngles : mobileTiltAngles)[photoIndex];
+  const depth = position === 0 ? 60 : -distance * (desktopGallery ? 46 : 42);
+  const scale = position === 0 ? 1 : desktopGallery ? 0.88 - distance * 0.035 : 0.88 - distance * 0.025;
+  const opacity = position === 0 ? 1 : desktopGallery ? distance === 1 ? 0.76 : distance === 2 ? 0.56 : 0.4 : position === 3 ? 0.46 : 0.82;
+  const sideFilter = desktopGallery && position !== 0 ? `contrast(${1 - distance * 0.035}) saturate(${1 - distance * 0.04})` : "none";
   return (
     <motion.button type="button" className={`workshop__photo${position === 0 ? " workshop__photo--active" : ""}`} onClick={position === 0 ? onActivate : undefined} aria-label={position === 0 ? `${photo.alt}. Нажмите, чтобы показать следующую фотографию` : photo.alt} aria-hidden={position !== 0} tabIndex={position === 0 ? 0 : -1}
       animate={reducedMotion ? { x: `${x}%`, z: 0, scale: 1, opacity, rotate: 0 } : { x: `${x}%`, z: depth, scale, opacity, rotate }}
@@ -44,7 +47,7 @@ function GalleryPhoto({ photo, photoIndex, position, reducedMotion, onActivate }
         fill
         sizes="(max-width: 767px) 70vw, (max-width: 1100px) 42vw, 510px"
         className="workshop__photo-image"
-        style={{ objectPosition: photo.position }}
+        style={{ objectPosition: photo.position, filter: sideFilter }}
       />
       <span className="workshop__photo-shade" aria-hidden="true" />
     </motion.button>
@@ -53,8 +56,16 @@ function GalleryPhoto({ photo, photoIndex, position, reducedMotion, onActivate }
 
 export default function WorkshopGallery() {
   const reducedMotion = useReducedMotion();
+  const [desktopGallery, setDesktopGallery] = useState(false);
   const [index, setIndex] = useState(0);
   const [locked, setLocked] = useState(false);
+  useEffect(() => {
+    const media = window.matchMedia("(min-width: 768px)");
+    const updateGalleryMode = () => setDesktopGallery(media.matches);
+    updateGalleryMode();
+    media.addEventListener("change", updateGalleryMode);
+    return () => media.removeEventListener("change", updateGalleryMode);
+  }, []);
   const timer = (delta: number) => { if (locked) return; setLocked(true); setIndex(current => (current + delta + workshopPhotos.length) % workshopPhotos.length); window.setTimeout(() => setLocked(false), reducedMotion ? 10 : 690); };
   const keyDown = (event: KeyboardEvent<HTMLDivElement>) => { if (event.key === "ArrowRight") { event.preventDefault(); timer(1); } if (event.key === "ArrowLeft") { event.preventDefault(); timer(-1); } };
 
@@ -74,7 +85,7 @@ export default function WorkshopGallery() {
           <div className="workshop__gallery-depth" onKeyDown={keyDown} tabIndex={0} role="group" aria-label={`Фотография ${index + 1} из 6`} aria-roledescription="галерея">
             {workshopPhotos.map((photo, photoIndex) => {
               const position = (photoIndex - index + workshopPhotos.length) % workshopPhotos.length;
-              return <GalleryPhoto key={photo.src.src} photo={photo} photoIndex={photoIndex} position={position} reducedMotion={Boolean(reducedMotion)} onActivate={() => timer(1)} />;
+              return <GalleryPhoto key={photo.src.src} photo={photo} photoIndex={photoIndex} position={position} reducedMotion={Boolean(reducedMotion)} desktopGallery={desktopGallery} onActivate={() => timer(1)} />;
             })}
             <button type="button" className="workshop__arrow workshop__arrow--previous" onClick={() => timer(-1)} disabled={locked} aria-label="Предыдущая фотография">←</button>
             <button type="button" className="workshop__arrow workshop__arrow--next" onClick={() => timer(1)} disabled={locked} aria-label="Следующая фотография">→</button>
