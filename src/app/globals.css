@@ -184,7 +184,7 @@ h1 em { color: inherit; font-weight: 500; }
   .collection__tabs button, .collection__slide, .collection__photo, .collection__photo-image { transition-duration: .01ms; }
 }
 
-.workshop { position: relative; z-index: auto; overflow: clip; min-height: 116svh; padding: clamp(96px, 12vw, 164px) clamp(20px, 6vw, 96px) clamp(56px, 6vw, 88px); background: #11100e; }
+.workshop { position: relative; z-index: auto; overflow: clip; min-height: 96svh; padding: clamp(96px, 12vw, 164px) clamp(20px, 6vw, 96px) clamp(44px, 4vw, 64px); background: #11100e; }
 .workshop__inner { position: relative; z-index: 10; display: grid; grid-template-columns: minmax(0, .82fr) minmax(0, 1.18fr); align-items: start; gap: clamp(32px, 4vw, 64px); width: min(100%, 1320px); margin: 0 auto; }
 .workshop__copy { position: sticky; top: clamp(100px, 17vh, 180px); max-width: 620px; padding-bottom: 36px; }
 .workshop__copy h2 { margin: 0; background: linear-gradient(90deg, #EDE8DF, #D49B5B, #B87333); background-clip: text; color: transparent; font-family: 'Playfair Display', Georgia, serif; font-size: 36px; font-weight: 500; letter-spacing: 0; line-height: 1.2; -webkit-background-clip: text; }
@@ -215,13 +215,13 @@ h1 em { color: inherit; font-weight: 500; }
   .workshop__photo-image { transition-duration: .01ms; }
 }
 @media (max-width: 960px) {
-  .workshop { min-height: 106svh; }
+  .workshop { min-height: 90svh; }
   .workshop__inner { grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: clamp(20px, 3vw, 32px); }
   .workshop__gallery-depth { min-height: 400px; }
   .workshop__photo { width: 60%; height: 84%; }
 }
 @media (max-width: 767px) {
-  .workshop { min-height: 0; padding: 86px 24px 64px; }
+  .workshop { min-height: 0; padding: 86px 24px 48px; }
   .workshop__inner { display: block; }
   .workshop__copy { position: relative; top: auto; max-width: none; padding: 0; }
   .workshop__copy h2 { font-size: 36px; }
@@ -234,10 +234,10 @@ h1 em { color: inherit; font-weight: 500; }
   .workshop__arrow { width: 32px; height: 36px; }
 }
 
-.aging-use { position: relative; isolation: isolate; overflow: hidden; padding: clamp(72px, 8vw, 108px) clamp(20px, 6vw, 96px) clamp(80px, 9vw, 120px); background: #141311; }
+.aging-use { position: relative; isolation: isolate; overflow: hidden; padding: clamp(56px, 6vw, 80px) clamp(20px, 6vw, 96px) clamp(80px, 9vw, 120px); background: #141311; }
 .aging-use::before { position: absolute; z-index: -1; top: 0; right: 0; left: 0; height: clamp(150px, 20vw, 280px); pointer-events: none; background: linear-gradient(to bottom, #11100e 0%, rgba(20,19,17,.82) 42%, transparent 100%); content: ""; }
 .aging-use::after { position: absolute; z-index: -1; right: 0; bottom: 0; left: 0; height: clamp(140px, 18vw, 240px); pointer-events: none; background: linear-gradient(to bottom, transparent, rgba(79,49,26,.08) 40%, #11100e 100%); content: ""; }
-.aging-use__inner { position: relative; z-index: 1; width: min(100%, 1200px); margin: 0 auto; }
+.aging-use__inner { position: relative; z-index: 1; width: min(100%, 1280px); margin: 0 auto; }
 .aging-use__header { max-width: 980px; margin: 0 auto; text-align: center; }
 .aging-use__eyebrow { display: flex; align-items: center; justify-content: center; gap: 12px; margin: 0 0 24px; color: var(--honey); font-size: 10px; letter-spacing: .2em; }
 .aging-use__eyebrow span { width: 28px; height: 1px; background: var(--honey); }
@@ -252,11 +252,11 @@ h1 em { color: inherit; font-weight: 500; }
 .aging-use__panel-intro h3 { margin: 0; color: var(--ivory); font-family: 'Playfair Display', Georgia, serif; font-size: clamp(28px, 3.2vw, 40px); font-weight: 500; line-height: 1.2; }
 .aging-use__panel-intro > p { max-width: 760px; margin: 18px auto 0; color: var(--canvas); font-size: 15px; line-height: 1.85; }
 .aging-use__rows { display: grid; gap: clamp(28px, 3.4vw, 44px); }
-.aging-use__row { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); min-height: 410px; align-items: center; gap: clamp(28px, 4vw, 48px); }
+.aging-use__row { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); min-height: 410px; align-items: center; gap: clamp(24px, 3vw, 40px); }
 .aging-use__row + .aging-use__row { padding-top: clamp(28px, 3.4vw, 44px); border-top: 1px solid rgba(138,90,54,.32); }
 .aging-use__row--reverse .aging-use__media { order: 2; }
 .aging-use__row--reverse .aging-use__copy { order: 1; }
-.aging-use__media { position: relative; justify-self: center; width: auto; height: 410px; aspect-ratio: 4 / 5; margin: 0; overflow: hidden; border: 1px solid rgba(184,115,51,.34); background: #1b1915; box-shadow: 0 18px 48px rgba(0,0,0,.32); }
+.aging-use__media { position: relative; justify-self: center; width: min(100%, 410px); height: auto; aspect-ratio: 4 / 5; margin: 0; overflow: hidden; border: 1px solid rgba(184,115,51,.34); background: #1b1915; box-shadow: 0 18px 48px rgba(0,0,0,.32); }
 .aging-use__media img { object-fit: cover; transition: transform .7s cubic-bezier(.22,1,.36,1), filter .7s ease; }
 .aging-use__media:hover img { transform: scale(1.025); filter: brightness(1.04); }
 .aging-use__media figcaption, .aging-use__interior-photo figcaption { position: absolute; right: 0; bottom: 0; left: 0; display: flex; align-items: center; gap: 14px; padding: 22px 20px 16px; background: linear-gradient(to top, rgba(17,16,14,.78), rgba(17,16,14,0)); color: var(--honey); font-size: 10px; letter-spacing: .14em; }
@@ -267,9 +267,8 @@ h1 em { color: inherit; font-weight: 500; }
 .aging-use__copy > p { margin: 0; color: var(--canvas); font-size: 15px; line-height: 1.85; }
 .aging-use__copy > p + p { margin-top: 18px; }
 .aging-use__manifesto { width: min(100%, 520px); margin: clamp(28px, 4vw, 46px) 0 0 auto; padding-top: 16px; border-top: 1px solid rgba(212,155,91,.58); color: rgba(237,232,223,.9); font-family: 'Playfair Display', Georgia, serif; font-size: 16px; font-style: italic; line-height: 1.6; text-align: right; }
-.aging-use__bases { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: clamp(20px, 3vw, 36px); margin-top: 12px; }
+.aging-use__bases { display: grid; grid-template-columns: minmax(0, 1fr); margin-top: 12px; }
 .aging-use__bases > div { padding: 13px 0 14px; border-top: 1px solid rgba(158,152,143,.24); }
-.aging-use__bases > div:nth-child(3) { grid-column: 1 / -1; }
 .aging-use__bases > div > span, .aging-use__bases > div > strong { display: block; margin-bottom: 6px; color: var(--honey); font-size: 10px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; }
 .aging-use__bases p { margin: 0; color: var(--canvas); font-size: 15px; line-height: 1.75; }
 .aging-use__bases p + p { margin-top: 8px; }
@@ -279,23 +278,21 @@ h1 em { color: inherit; font-weight: 500; }
 .aging-use__interior-photo:hover img { transform: scale(1.025); filter: brightness(1.05); }
 .aging-use__interior-note { margin: 28px 0 0; color: var(--ivory); font-family: 'Playfair Display', Georgia, serif; font-size: 19px; font-style: italic; line-height: 1.55; text-align: center; }
 @media (max-width: 960px) {
-  .aging-use__row { grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); min-height: 0; gap: clamp(22px, 3vw, 34px); }
-  .aging-use__media { height: 340px; }
-  .aging-use__bases { grid-template-columns: 1fr; }
-  .aging-use__bases > div:nth-child(3) { grid-column: auto; }
+  .aging-use__row { grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); min-height: 0; gap: clamp(20px, 3vw, 30px); }
+  .aging-use__media { width: min(100%, 340px); }
 }
 @media (max-width: 767px) {
-  .aging-use { padding: 68px 24px 84px; }
+  .aging-use { padding: 52px 24px 72px; }
   .aging-use__header h2 { font-size: clamp(34px, 9vw, 42px); }
   .aging-use__tabs { margin-top: 28px; }
   .aging-use__panel-intro { margin-top: 0; margin-bottom: 32px; }
   .aging-use__panel-intro h3 { font-size: 30px; }
   .aging-use__panel-intro > p { font-size: 13px; line-height: 1.8; }
   .aging-use__rows { gap: 30px; }
-  .aging-use__row { grid-template-columns: minmax(0, 1fr); gap: 22px; }
+  .aging-use__row { grid-template-columns: minmax(0, 1fr); gap: 18px; }
   .aging-use__row + .aging-use__row { padding-top: 30px; }
   .aging-use__row--reverse .aging-use__media, .aging-use__row--reverse .aging-use__copy { order: initial; }
-  .aging-use__media { width: 100%; height: auto; aspect-ratio: 4 / 5; }
+  .aging-use__media { width: 100%; max-width: 420px; height: auto; aspect-ratio: 4 / 5; justify-self: start; }
   .aging-use__manifesto { max-width: 100%; font-size: 15px; }
   .aging-use__copy { max-width: none; }
   .aging-use__copy h4 { margin-bottom: 14px; font-size: 29px; }
