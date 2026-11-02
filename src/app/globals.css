@@ -234,9 +234,9 @@ h1 em { color: inherit; font-weight: 500; }
   .workshop__arrow { width: 32px; height: 36px; }
 }
 
-.aging-use { position: relative; isolation: isolate; overflow: hidden; padding: clamp(56px, 6vw, 80px) clamp(20px, 6vw, 96px) clamp(80px, 9vw, 120px); background: #141311; }
+.aging-use { position: relative; isolation: isolate; overflow: hidden; padding: clamp(56px, 6vw, 80px) clamp(20px, 6vw, 96px) clamp(56px, 6vw, 80px); background: #141311; }
 .aging-use::before { position: absolute; z-index: -1; top: 0; right: 0; left: 0; height: clamp(150px, 20vw, 280px); pointer-events: none; background: linear-gradient(to bottom, #11100e 0%, rgba(20,19,17,.82) 42%, transparent 100%); content: ""; }
-.aging-use::after { position: absolute; z-index: -1; right: 0; bottom: 0; left: 0; height: clamp(140px, 18vw, 240px); pointer-events: none; background: linear-gradient(to bottom, transparent, rgba(79,49,26,.08) 40%, #11100e 100%); content: ""; }
+.aging-use::after { position: absolute; z-index: -1; right: 0; bottom: 0; left: 0; height: clamp(320px, 36vw, 480px); pointer-events: none; background: radial-gradient(ellipse 74% 88% at 82% 100%, rgba(212,155,91,.105) 0%, rgba(184,115,51,.045) 38%, rgba(17,16,14,0) 78%); content: ""; }
 .aging-use__inner { position: relative; z-index: 1; width: min(100%, 1280px); margin: 0 auto; }
 .aging-use__header { max-width: 980px; margin: 0 auto; text-align: center; }
 .aging-use__eyebrow { display: flex; align-items: center; justify-content: center; gap: 12px; margin: 0 0 24px; color: var(--honey); font-size: 10px; letter-spacing: .2em; }
@@ -266,7 +266,15 @@ h1 em { color: inherit; font-weight: 500; }
 .aging-use__copy h4 { margin: 0 0 20px; color: var(--ivory); font-family: 'Playfair Display', Georgia, serif; font-size: clamp(28px, 3vw, 36px); font-weight: 500; line-height: 1.2; }
 .aging-use__copy > p { margin: 0; color: var(--canvas); font-size: 15px; line-height: 1.85; }
 .aging-use__copy > p + p { margin-top: 18px; }
-.aging-use__manifesto { width: min(100%, 520px); margin: clamp(28px, 4vw, 46px) 0 0 auto; padding-top: 16px; border-top: 1px solid rgba(212,155,91,.58); color: rgba(237,232,223,.9); font-family: 'Playfair Display', Georgia, serif; font-size: 16px; font-style: italic; line-height: 1.6; text-align: right; }
+.aging-use__manifesto { position: relative; width: min(100%, 720px); margin: clamp(24px, 3vw, 36px) 0 0 auto; padding-top: 12px; color: #E6D2B5; font-family: 'Playfair Display', Georgia, serif; font-size: 15px; font-style: italic; line-height: 1.5; text-align: right; }
+.aging-use__manifesto::after { position: absolute; top: 0; right: 0; left: 0; height: 1px; background: linear-gradient(to left, rgba(212,155,91,.36) 0%, rgba(212,155,91,.2) 54%, rgba(212,155,91,0) 100%); content: ""; }
+.aging-use__manifesto::before { margin-right: 9px; color: var(--honey); content: "/"; font-style: normal; }
+.aging-use__row--aftertaste { position: relative; isolation: isolate; }
+.aging-use__row--aftertaste::after { content: none; }
+.aging-use__row--aftertaste .aging-use__media, .aging-use__row--aftertaste .aging-use__copy { position: relative; z-index: 1; }
+.aging-use__row--aftertaste .aging-use__copy h4 { margin-bottom: 14px; }
+.aging-use__row--aftertaste .aging-use__copy > p + p { margin-top: 12px; }
+.aging-use__row--aftertaste .aging-use__manifesto { margin-top: 18px; }
 .aging-use__bases { display: grid; grid-template-columns: minmax(0, 1fr); margin-top: 12px; }
 .aging-use__bases > div { padding: 13px 0 14px; border-top: 1px solid rgba(158,152,143,.24); }
 .aging-use__bases > div:first-child { border-top: 0; }

@@ -126,7 +126,7 @@ export default function AgingUseSection() {
                 <div className="aging-use__rows">
                   {agingPhotos.map(([src, alt], index) => (
                     <motion.article
-                      className={`aging-use__row${index === 1 ? " aging-use__row--reverse" : ""}`}
+                      className={`aging-use__row${index === 1 ? " aging-use__row--reverse" : ""}${index === 2 ? " aging-use__row--aftertaste" : ""}`}
                       key={src}
                       initial={reduceMotion ? false : { opacity: 0, y: 22 }}
                       whileInView={{ opacity: 1, y: 0 }}
