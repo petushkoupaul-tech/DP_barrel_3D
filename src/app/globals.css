@@ -277,8 +277,13 @@ h1 em { color: inherit; font-weight: 500; }
 .aging-use__interior-photo img { object-fit: cover; transition: transform .7s cubic-bezier(.22,1,.36,1), filter .7s ease; }
 .aging-use__interior-photo:hover img { transform: scale(1.025); filter: brightness(1.05); }
 .aging-use__interior-note { margin: 28px 0 0; color: var(--ivory); font-family: 'Playfair Display', Georgia, serif; font-size: 19px; font-style: italic; line-height: 1.55; text-align: center; }
+@media (min-width: 768px) {
+  .aging-use__panels { padding-top: clamp(24px, 2.5vw, 34px); }
+  .aging-use__row { min-height: 462px; }
+  .aging-use__media { width: min(100%, 370px); }
+}
 @media (max-width: 960px) {
-  .aging-use__row { grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); min-height: 0; gap: clamp(20px, 3vw, 30px); }
+  .aging-use__row { grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); min-height: 462px; gap: clamp(20px, 3vw, 30px); }
   .aging-use__media { width: min(100%, 340px); }
 }
 @media (max-width: 767px) {
