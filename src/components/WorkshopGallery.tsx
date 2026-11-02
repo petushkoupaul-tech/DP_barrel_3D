@@ -118,7 +118,7 @@ export default function WorkshopGallery() {
     <section id="workshop" className={`workshop${reducedMotion ? " workshop--reduced-motion" : ""}`} aria-labelledby="workshop-title">
       <div className="workshop__inner">
         <div className="workshop__copy">
-          <motion.h2 id="workshop-title" initial={reducedMotion ? false : { opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.2 }} transition={{ duration: reducedMotion ? 0 : 0.55, ease: [0.22, 1, 0.36, 1] }}>Мастерская<br />и ремесло</motion.h2>
+          <motion.h2 id="workshop-title" initial={reducedMotion ? false : { opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.2 }} transition={{ duration: reducedMotion ? 0 : 0.55, ease: [0.22, 1, 0.36, 1] }}>Мастерская и ремесло</motion.h2>
           <motion.p initial={reducedMotion ? false : { opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.2 }} transition={{ duration: reducedMotion ? 0 : 0.5, delay: reducedMotion ? 0 : 0.12 }}>Путь бочки начинается с древесины. Отбор материала, подготовка клёпок, обработка, сборка и обжиг формируют конструкцию и подготавливают дерево к дальнейшему использованию.</motion.p>
           <motion.p className="workshop__accent" initial={reducedMotion ? false : { opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.2 }} transition={{ duration: reducedMotion ? 0 : 0.5, delay: reducedMotion ? 0 : 0.22 }}>Важна каждая деталь: точность соединений, свойства древесины и степень обжига. Именно сочетание этих факторов определяет характер готового изделия.</motion.p>
           <ol className="workshop__stages">
