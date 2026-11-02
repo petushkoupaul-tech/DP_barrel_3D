@@ -6,33 +6,10 @@ import { useEffect, useState, type KeyboardEvent } from "react";
 
 type SectionTab = "aging" | "interior";
 
-const agingRows = [
-  {
-    number: "01",
-    title: "Древесина и напиток",
-    paragraphs: [
-      "Для подготовки бочек используют креплёные вина и дистилляты. Взаимодействуя с древесиной, они влияют на будущий вкусоароматический профиль.",
-    ],
-    image: "/media/aging/1.png",
-    alt: "Дубовая бочка для выдержки рядом с бутылкой креплёного вина",
-  },
-  {
-    number: "02",
-    title: "Основы выдержки",
-    paragraphs: [],
-    image: "/media/aging/2.png",
-    alt: "Напиток наливают из бочки с деревянным резным основанием",
-  },
-  {
-    number: "03",
-    title: "Время раскрывает характер",
-    paragraphs: [
-      "Срок выдержки зависит от напитка и объёма бочки: процесс может занять несколько недель, год и более.",
-      "Реальная выдержка. Натуральные материалы. Без искусственной имитации ароматов.",
-    ],
-    image: "/media/aging/3.png",
-    alt: "Бокал напитка перед деревянной бочкой с гравировкой",
-  },
+const agingPhotos = [
+  ["/media/aging/1.png", "Дубовая бочка для выдержки рядом с бутылкой креплёного вина"],
+  ["/media/aging/2.png", "Напиток наливают из бочки с деревянным резным основанием"],
+  ["/media/aging/3.png", "Бокал напитка перед деревянной бочкой с гравировкой"],
 ] as const;
 
 const interiorPhotos = [
@@ -146,42 +123,44 @@ export default function AgingUseSection() {
             <AnimatePresence mode="wait" initial={false}>
               {activeTab === "aging" ? (
               <motion.div key="aging" {...reveal} exit={reduceMotion ? { opacity: 0 } : { opacity: 0, y: -8 }}>
-                <div className="aging-use__panel-intro">
-                  <h3>Характер, который формируется со временем</h3>
-                </div>
-
                 <div className="aging-use__rows">
-                  {agingRows.map((row, index) => (
+                  {agingPhotos.map(([src, alt], index) => (
                     <motion.article
                       className={`aging-use__row${index === 1 ? " aging-use__row--reverse" : ""}`}
-                      key={row.number}
+                      key={src}
                       initial={reduceMotion ? false : { opacity: 0, y: 22 }}
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true, amount: 0.12 }}
                       transition={{ duration: reduceMotion ? 0 : 0.65, delay: reduceMotion ? 0 : index * 0.08, ease: [0.22, 1, 0.36, 1] }}
                     >
                       <figure className="aging-use__media">
-                        <Image src={row.image} alt={row.alt} fill sizes="(max-width: 767px) 88vw, (max-width: 1100px) 44vw, 600px" quality={88} />
+                        <Image src={src} alt={alt} fill sizes="(max-width: 767px) 88vw, (max-width: 1100px) 44vw, 600px" quality={88} />
                         <figcaption><span>DP BARREL &amp; SPIRIT</span></figcaption>
                       </figure>
-                      <div className="aging-use__copy">
-                        <h4>{row.title}</h4>
-                        {row.paragraphs.map((paragraph, paragraphIndex) => (
-                          <p className={index === 2 && paragraphIndex === 1 ? "aging-use__manifesto" : undefined} key={paragraph}>
-                            {paragraph}
-                          </p>
-                        ))}
-                        {index === 1 && (
-                          <div className="aging-use__bases" aria-label="Напитки для подготовки бочек">
-                            <div><span>Испанские креплёные</span><p>PX · Amontillado · Fino · Oloroso · Cream</p></div>
-                            <div><span>Португальские</span><p>White Port · Ruby Port</p></div>
-                            <div><span>Дистилляты и наливки</span><p>Ром · кальвадос · москатель · натуральная сливовица и ежевичная наливка</p></div>
-                          </div>
-                        )}
-                      </div>
+                      {index === 0 && <div className="aging-use__copy">
+                        <h4>01 / Выдержка</h4>
+                        <p>Характер бочки формируется не только древесиной, но и напитками, с которыми она взаимодействует.</p>
+                        <p>Для создания особого вкусового профиля бочку предварительно насыщают ароматами креплёных вин, дистиллятов и других основ. После этого её используют для выдержки другого напитка, который постепенно раскрывает новые оттенки, унаследованные от древесины.</p>
+                        <p>Так рождается многогранный вкус, в котором соединяются характер исходной древесины и ароматический след предыдущей основы</p>
+                        <p>Срок выдержки зависит от выбранной основы и объёма бочки. Процесс может занимать несколько недель, год и более. Со временем древесина впитывает часть ароматов напитка, сохраняя их для последующего использования.</p>
+                      </div>}
+                      {index === 1 && <div className="aging-use__copy">
+                        <h4>02 / Используемые основы</h4>
+                        <div className="aging-use__bases">
+                          <div><strong>Испанские креплёные вина</strong><p>Pedro Ximénez · Amontillado · Fino · Oloroso · Cream</p><p>От насыщенного изюма и сухофруктов до тонких ореховых и пряных оттенков. Каждый стиль хереса оставляет свой след в древесине, который со временем может проявиться в новом напитке, придавая ему глубину и выразительность.</p></div>
+                          <div><strong>Португальские вина</strong><p>White Port · Ruby Port</p><p>Ягодная сочность, спелые плоды, цитрусовая свежесть и мягкая сладость. После взаимодействия с древесиной эти характерные черты могут стать более округлыми, а вкус — обрести дополнительную глубину.</p></div>
+                          <div><strong>Дистилляты и наливки</strong><p>Ром · Кальвадос · Москатель · Натуральная сливовица · Ежевичная наливка</p><p>Ваниль, карамель, специи, яблоки, сливы и тёмные ягоды. Древесина помогает объединить эти оттенки, смягчить резкость и сформировать более цельный, многогранный характер напитка.</p></div>
+                        </div>
+                      </div>}
+                      {index === 2 && <div className="aging-use__copy">
+                        <h4>03 / Послевкусие</h4>
+                        <p>Каждая основа оставляет свой ароматический след в древесине. При последующем заполнении бочки он может раскрыться в напитке оттенками фруктов, орехов, специй или тёплой древесности.</p>
+                        <p>Время, объём бочки и выбранный напиток определяют характер этого взаимодействия. Именно в нём рождается новое сочетание, не похожее на исходный вкус.</p>
+                      </div>}
                     </motion.article>
                   ))}
                 </div>
+                <p className="aging-use__manifesto">Реальная выдержка. Натуральные материалы. Без искусственной имитации ароматов.</p>
               </motion.div>
               ) : (
               <motion.div key="interior" {...reveal} exit={reduceMotion ? { opacity: 0 } : { opacity: 0, y: -8 }}>
