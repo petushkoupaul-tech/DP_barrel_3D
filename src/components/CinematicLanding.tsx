@@ -5,6 +5,7 @@ import { motion, useMotionValue, useReducedMotion, useScroll, useSpring, useTran
 import { useEffect, useRef, useState, type MouseEvent as ReactMouseEvent, type RefObject } from "react";
 import CollectionSection from "@/components/CollectionSection";
 import WorkshopGallery from "@/components/WorkshopGallery";
+import AgingUseSection from "@/components/AgingUseSection";
 
 const navigation = [
   ["О проекте", "#philosophy"],
@@ -341,6 +342,7 @@ export default function CinematicLanding() {
 
       <CollectionSection />
       <WorkshopGallery />
+      <AgingUseSection />
       </div>
     </main>
   );
