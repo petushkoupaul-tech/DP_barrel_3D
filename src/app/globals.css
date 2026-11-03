@@ -282,11 +282,23 @@ h1 em { color: inherit; font-weight: 500; }
 .aging-use__bases p { margin: 0; color: var(--canvas); font-size: 15px; line-height: 1.75; }
 .aging-use__bases p:first-of-type { color: #E6D2B5; font-size: 16px; }
 .aging-use__bases p + p { margin-top: 8px; }
-.aging-use__interior-gallery { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(12px, 1.6vw, 18px); }
-.aging-use__interior-photo { position: relative; aspect-ratio: 1.18 / 1; margin: 0; overflow: hidden; border: 1px solid rgba(184,115,51,.34); background: #141311; box-shadow: 0 18px 54px rgba(0,0,0,.3); }
+.aging-use__interior-stage { display: grid; width: min(100%, 1320px); margin-inline: auto; grid-template-columns: minmax(0, 1fr) minmax(240px, .86fr) minmax(0, 1fr); grid-template-rows: repeat(2, minmax(0, 1fr)); align-items: center; gap: clamp(22px, 3.2vw, 48px); }
+.aging-use__panel-intro--interior { grid-column: 2; grid-row: 1 / 3; align-self: center; margin: 0; }
+.aging-use__panel-intro--interior h3 { font-size: clamp(28px, 3.1vw, 44px); }
+.aging-use__interior-gallery { display: contents; }
+.aging-use__interior-photo { position: relative; aspect-ratio: 1.18 / 1; width: 100%; min-width: 0; margin: 0; overflow: hidden; border: 1px solid rgba(184,115,51,.34); background: #141311; box-shadow: 0 18px 54px rgba(0,0,0,.3); }
+.aging-use__interior-photo:nth-child(2) { grid-column: 1; grid-row: 1; }
+.aging-use__interior-photo:nth-child(3) { grid-column: 3; grid-row: 1; }
+.aging-use__interior-photo:nth-child(4) { grid-column: 1; grid-row: 2; }
+.aging-use__interior-photo:nth-child(5) { grid-column: 3; grid-row: 2; }
 .aging-use__interior-photo img { object-fit: contain; transition: transform .7s cubic-bezier(.22,1,.36,1), filter .7s ease; }
 .aging-use__interior-photo:hover img { transform: scale(1.025); filter: brightness(1.05); }
 .aging-use__interior-note { margin: 28px 0 0; color: var(--ivory); font-family: 'Playfair Display', Georgia, serif; font-size: 19px; font-style: italic; line-height: 1.55; text-align: center; }
+@media (max-width: 1000px) {
+  .aging-use__interior-stage { width: min(100%, 820px); grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: auto; gap: 24px; }
+  .aging-use__panel-intro--interior { grid-column: 1 / -1; grid-row: auto; max-width: 720px; justify-self: center; margin-bottom: 8px; }
+  .aging-use__interior-photo:nth-child(n) { grid-column: auto; grid-row: auto; }
+}
 @media (min-width: 768px) {
   .aging-use__panels { padding-top: clamp(24px, 2.5vw, 34px); }
   .aging-use__row { min-height: 462px; }
@@ -313,14 +325,16 @@ h1 em { color: inherit; font-weight: 500; }
   .aging-use__copy h4 { margin-bottom: 14px; font-size: 29px; }
   .aging-use__copy > p { font-size: 14px; }
   .aging-use__bases { margin-top: 18px; }
-  .aging-use__interior-gallery { gap: 10px; }
+  .aging-use__interior-stage { width: 100%; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
   .aging-use__interior-photo { aspect-ratio: .94 / 1; }
   .aging-use__interior-photo figcaption { gap: 8px; padding: 18px 10px 12px; font-size: 9px; }
   .aging-use__interior-photo figcaption span { font-size: 7px; }
 }
 @media (max-width: 520px) {
   .aging-use { padding-right: 20px; padding-left: 20px; }
-  .aging-use__interior-gallery { grid-template-columns: 1fr; gap: 14px; }
+  .aging-use__interior-stage { grid-template-columns: 1fr; gap: 16px; }
+  .aging-use__panel-intro--interior { grid-column: 1; margin-bottom: 12px; }
+  .aging-use__interior-photo { width: min(100%, 420px); justify-self: center; }
   .aging-use__interior-photo { aspect-ratio: 1.16 / 1; }
 }
 @media (prefers-reduced-motion: reduce) {

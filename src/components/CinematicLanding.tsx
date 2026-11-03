@@ -4,6 +4,7 @@ import Image from "next/image";
 import { motion, useMotionValue, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
 import { useEffect, useRef, useState, type MouseEvent as ReactMouseEvent, type RefObject } from "react";
 import CollectionSection from "@/components/CollectionSection";
+import Footer from "@/components/Footer";
 import WorkshopGallery from "@/components/WorkshopGallery";
 import AgingUseSection from "@/components/AgingUseSection";
 
@@ -344,6 +345,7 @@ export default function CinematicLanding() {
       <WorkshopGallery />
       <AgingUseSection />
       </div>
+      <Footer />
     </main>
   );
 }

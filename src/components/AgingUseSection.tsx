@@ -163,27 +163,47 @@ export default function AgingUseSection() {
                 <p className="aging-use__manifesto">Реальная выдержка. Натуральные материалы. Без искусственной имитации ароматов.</p>
               </motion.div>
               ) : (
-              <motion.div key="interior" {...reveal} exit={reduceMotion ? { opacity: 0 } : { opacity: 0, y: -8 }}>
-                <div className="aging-use__panel-intro aging-use__panel-intro--interior">
+              <motion.div
+                key="interior"
+                initial={reduceMotion ? false : "hidden"}
+                animate="visible"
+                exit={reduceMotion ? { opacity: 0 } : { opacity: 0, y: -8 }}
+                variants={{ hidden: {}, visible: {} }}
+              >
+                <div className="aging-use__interior-stage">
+                <motion.div
+                  className="aging-use__panel-intro aging-use__panel-intro--interior"
+                  variants={{
+                    hidden: reduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 },
+                    visible: { opacity: 1, y: 0, transition: { duration: reduceMotion ? 0 : 0.55, ease: [0.22, 1, 0.36, 1], delay: reduceMotion ? 0 : 0.08 } },
+                  }}
+                >
                   <h3>Бочка как часть интерьера</h3>
                   <p>Натуральная древесина, металлические обручи и выразительная фактура превращают бочку в функциональную деталь пространства. Она естественно сочетается с деревом, камнем и кожей — в домашнем баре, кабинете или лаунже.</p>
-                </div>
+                </motion.div>
                 <div className="aging-use__interior-gallery">
-                  {interiorPhotos.map((photo, index) => (
+                  {interiorPhotos.map((photo) => (
                     <motion.figure
                       className="aging-use__interior-photo"
                       key={photo.src}
-                      initial={reduceMotion ? false : { opacity: 0, y: 14 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true, amount: 0.1 }}
-                      transition={{ duration: reduceMotion ? 0 : 0.5, delay: reduceMotion ? 0 : index * 0.055, ease: [0.22, 1, 0.36, 1] }}
+                      variants={{
+                        hidden: reduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 },
+                        visible: { opacity: 1, y: 0, transition: { duration: reduceMotion ? 0 : 0.48, delay: reduceMotion ? 0 : 0.25 + interiorPhotos.indexOf(photo) * 0.15, ease: [0.22, 1, 0.36, 1] } },
+                      }}
                     >
                       <Image src={photo.src} alt={photo.alt} fill sizes="(max-width: 700px) 88vw, (max-width: 1100px) 44vw, 600px" quality={88} />
                       <figcaption><span>В ДЕТАЛЯХ ПРОСТРАНСТВА</span></figcaption>
                     </motion.figure>
                   ))}
                 </div>
-                <p className="aging-use__interior-note">Лаконичный акцент, который не перегружает интерьер.</p>
+                <motion.p
+                  className="aging-use__interior-note"
+                  variants={{
+                    hidden: reduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 },
+                    visible: { opacity: 1, y: 0, transition: { duration: reduceMotion ? 0 : 0.45 } },
+                  }}
+                >Лаконичный акцент, который не перегружает интерьер.</motion.p>
+                </div>
               </motion.div>
               )}
             </AnimatePresence>
