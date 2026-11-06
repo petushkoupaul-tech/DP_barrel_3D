@@ -257,7 +257,7 @@ export default function CinematicLanding() {
       </section>
 
       <div ref={storySectionsRef} className="story-sections">
-      <WorkshopSparks sectionRef={storySectionsRef} />
+      <WorkshopSparks sectionRef={storyRef} />
       <motion.section
         ref={philosophyRef}
         id="philosophy"
@@ -344,8 +344,8 @@ export default function CinematicLanding() {
       <CollectionSection />
       <WorkshopGallery />
       <AgingUseSection />
-      </div>
       <Footer />
+      </div>
     </main>
   );
 }

@@ -3,36 +3,36 @@
   overflow: hidden;
   padding: clamp(72px, 9vw, 132px) clamp(24px, 7vw, 112px) 28px;
   isolation: isolate;
-  background:
-    radial-gradient(ellipse 92% 58% at 50% 0%, rgba(212, 155, 91, .085) 0%, rgba(184, 115, 51, .04) 38%, transparent 76%),
-    linear-gradient(180deg, #171512 0%, #100f0d 34%, #0A0908 100%);
+  background: linear-gradient(180deg, #141311 0%, #11100e 100%);
   color: var(--ivory);
-}
-
-.footer::before {
-  position: absolute;
-  z-index: -1;
-  inset: 0;
-  pointer-events: none;
-  background:
-    radial-gradient(circle at 8% 28%, rgba(212, 155, 91, .48) 0 1.4px, transparent 2.2px),
-    radial-gradient(circle at 24% 62%, rgba(229, 138, 43, .4) 0 1.2px, transparent 2px),
-    radial-gradient(circle at 76% 35%, rgba(184, 115, 51, .42) 0 1.3px, transparent 2.1px),
-    radial-gradient(circle at 92% 72%, rgba(212, 155, 91, .38) 0 1.2px, transparent 2px);
-  content: "";
-  animation: footer-embers 8s ease-in-out infinite alternate;
 }
 
 .inner,
 .bottom {
+  position: relative;
+  z-index: 1;
   width: min(100%, 1320px);
   margin: 0 auto;
 }
 
 .inner {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: clamp(48px, 10vw, 160px);
+  grid-template-columns: minmax(0, 1fr) minmax(150px, 220px) auto;
+  align-items: center;
+  gap: clamp(42px, 7vw, 104px);
+}
+
+.emblem {
+  display: grid;
+  width: 100%;
+  place-items: center;
+}
+
+.emblemImage {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
 }
 
 .brandName {
@@ -60,7 +60,9 @@
 .linksArea {
   display: grid;
   grid-template-columns: minmax(112px, 1fr) minmax(160px, 1.25fr);
-  gap: clamp(42px, 7vw, 112px);
+  gap: clamp(28px, 4vw, 60px);
+  padding-left: clamp(24px, 3vw, 44px);
+  border-left: 1px solid rgba(212, 155, 91, .2);
 }
 
 .heading {
@@ -92,11 +94,6 @@
 .navigation a:hover,
 .socials a:hover { color: var(--honey); }
 
-@keyframes footer-embers {
-  from { opacity: .48; transform: translateY(0); }
-  to { opacity: .8; transform: translateY(-5px); }
-}
-
 .bottom {
   margin-top: clamp(64px, 9vw, 116px);
   padding-top: 22px;
@@ -112,11 +109,16 @@
 
 @media (max-width: 767px) {
   .footer { padding: 64px 24px 24px; }
-  .inner { grid-template-columns: minmax(0, 1fr); gap: 52px; }
-  .linksArea { grid-template-columns: minmax(0, 1fr); gap: 42px; }
+  .inner { grid-template-columns: minmax(0, 1fr); justify-items: start; gap: 36px; }
+  .emblem { width: 148px; justify-self: center; }
+  .linksArea { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; width: 100%; padding: 0; border-left: 0; }
   .tagline { margin-top: 14px; }
   .navigation ul, .socials { gap: 14px; }
   .bottom { margin-top: 56px; }
+}
+
+@media (max-width: 420px) {
+  .linksArea { grid-template-columns: minmax(0, 1fr); gap: 30px; }
 }
 
 @media (max-width: 380px) {
@@ -124,6 +126,3 @@
   .brandName { font-size: 30px; }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .footer::before { animation: none; opacity: .62; }
-}

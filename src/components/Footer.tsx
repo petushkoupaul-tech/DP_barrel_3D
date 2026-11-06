@@ -1,3 +1,4 @@
+import Image from "next/image";
 import styles from "./Footer.module.css";
 
 const navigation = [
@@ -21,6 +22,17 @@ export default function Footer() {
         <div className={styles.brand}>
           <a className={styles.brandName} href="#top">DP Barrel &amp; Spirit</a>
           <p className={styles.tagline}>Crafted by Nature. Aged by Time.</p>
+        </div>
+
+        <div className={styles.emblem}>
+          <Image
+            src="/media/footer/dp-emblem.png"
+            alt="Эмблема DP с головой бизона"
+            width={1536}
+            height={1024}
+            sizes="(max-width: 767px) 150px, (max-width: 1100px) 180px, 220px"
+            className={styles.emblemImage}
+          />
         </div>
 
         <div className={styles.linksArea}>
