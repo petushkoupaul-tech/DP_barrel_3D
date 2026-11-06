@@ -236,7 +236,7 @@ h1 em { color: inherit; font-weight: 500; }
 
 .aging-use { position: relative; isolation: isolate; overflow: hidden; padding: clamp(56px, 6vw, 80px) clamp(20px, 6vw, 96px) clamp(56px, 6vw, 80px); background: #141311; }
 .aging-use::before { position: absolute; z-index: -1; top: 0; right: 0; left: 0; height: clamp(150px, 20vw, 280px); pointer-events: none; background: linear-gradient(to bottom, #11100e 0%, rgba(20,19,17,.82) 42%, transparent 100%); content: ""; }
-.aging-use::after { position: absolute; z-index: -1; right: 0; bottom: 0; left: 0; height: clamp(320px, 36vw, 480px); pointer-events: none; background: radial-gradient(ellipse 74% 88% at 82% 100%, rgba(212,155,91,.105) 0%, rgba(184,115,51,.045) 38%, rgba(17,16,14,0) 78%); content: ""; }
+.aging-use::after { position: absolute; z-index: -1; right: 0; bottom: 0; left: 0; height: clamp(320px, 36vw, 480px); pointer-events: none; background: linear-gradient(to bottom, rgba(20,19,17,0) 0%, #141311 100%); content: ""; }
 .aging-use__inner { position: relative; z-index: 1; width: min(100%, 1280px); margin: 0 auto; }
 .aging-use__header { max-width: 980px; margin: 0 auto; text-align: center; }
 .aging-use__eyebrow { display: flex; align-items: center; justify-content: center; gap: 12px; margin: 0 0 24px; color: var(--honey); font-size: 10px; letter-spacing: .2em; }
