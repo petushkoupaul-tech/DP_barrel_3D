@@ -9,6 +9,7 @@ import WorkshopGallery from "@/components/WorkshopGallery";
 import AgingUseSection from "@/components/AgingUseSection";
 
 const navigation = [
+  ["Главная", "#top"],
   ["О проекте", "#philosophy"],
   ["Галерея", "#gallery"],
   ["Мастерская", "#workshop"],
@@ -149,6 +150,7 @@ export default function CinematicLanding() {
   const springScale = useSpring(cardScale, { stiffness: 150, damping: 20 });
   const [tiltEnabled, setTiltEnabled] = useState(false);
   const [desktopReveal, setDesktopReveal] = useState(false);
+  const [activeNavigation, setActiveNavigation] = useState("#top");
   const { scrollYProgress } = useScroll({
     target: storyRef,
     offset: ["start start", "end end"],
@@ -163,6 +165,33 @@ export default function CinematicLanding() {
     updateRevealMode();
     media.addEventListener("change", updateRevealMode);
     return () => media.removeEventListener("change", updateRevealMode);
+  }, []);
+
+  useEffect(() => {
+    const syncNavigation = () => {
+      if (window.scrollY < 80) {
+        setActiveNavigation("#top");
+        return;
+      }
+
+      const markerLine = window.innerHeight * 0.42;
+      const currentSection = [...navigation].slice(1).reverse().find(([, href]) => {
+        const target = document.querySelector<HTMLElement>(href);
+        if (!target) return false;
+        const bounds = target.getBoundingClientRect();
+        return bounds.top <= markerLine && bounds.bottom > markerLine;
+      });
+      if (currentSection) setActiveNavigation(currentSection[1]);
+    };
+    window.addEventListener("hashchange", syncNavigation);
+    window.addEventListener("popstate", syncNavigation);
+    window.addEventListener("scroll", syncNavigation, { passive: true });
+    syncNavigation();
+    return () => {
+      window.removeEventListener("hashchange", syncNavigation);
+      window.removeEventListener("popstate", syncNavigation);
+      window.removeEventListener("scroll", syncNavigation);
+    };
   }, []);
 
   useEffect(() => {
@@ -209,6 +238,7 @@ export default function CinematicLanding() {
   const scrollToPhilosophy = () => {
     const section = document.getElementById("philosophy");
     if (section) {
+      setActiveNavigation("#philosophy");
       window.scrollTo({
         top: section.offsetTop,
         behavior: "smooth",
@@ -242,7 +272,22 @@ export default function CinematicLanding() {
           </a>
           <nav className="navigation" aria-label="Основная навигация">
             {navigation.map(([label, href]) => (
-              <a key={label} href={href}>{label}</a>
+              <motion.a
+                key={label}
+                href={href}
+                aria-current={activeNavigation === href ? "location" : undefined}
+                onClick={() => setActiveNavigation(href)}
+              >
+                {activeNavigation === href && (
+                  <motion.span
+                    className="navigation__active-pill"
+                    layoutId="hero-navigation-active"
+                    transition={{ duration: reduceMotion ? 0 : 0.48, ease: [0.22, 1, 0.36, 1] }}
+                    aria-hidden="true"
+                  />
+                )}
+                <span className="navigation__label">{label}</span>
+              </motion.a>
             ))}
           </nav>
           <a className="header-contact" href="#contacts">Связаться <span aria-hidden="true">↗</span></a>
@@ -268,12 +313,10 @@ export default function CinematicLanding() {
           type="button"
           onClick={scrollToPhilosophy}
           aria-label="Листать к философии"
-          className="absolute bottom-8 left-1/2 z-30 flex -translate-x-1/2 flex-col items-center gap-2 cursor-pointer group pointer-events-auto select-none px-5 py-2"
+          className="hero__scroll-button absolute bottom-8 left-1/2 z-30 flex -translate-x-1/2 items-center gap-3 cursor-pointer group pointer-events-auto select-none px-5 py-3"
         >
-          <span className="text-[11px] font-sans tracking-[0.25em] text-[#EDE8DF] group-hover:text-[#D49B5B] transition-colors duration-300">
-            ЛИСТАТЬ
-          </span>
-          <span aria-hidden="true" className="w-[1.5px] h-7 bg-gradient-to-b from-[#D49B5B] via-[#B87333]/80 to-transparent group-hover:translate-y-1 transition-transform duration-300" />
+          <span className="hero__scroll-label">Листать</span>
+          <span aria-hidden="true" className="hero__scroll-arrow">↓</span>
         </button>
       </section>
 
