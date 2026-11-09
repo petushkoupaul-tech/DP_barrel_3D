@@ -150,6 +150,7 @@ export default function CinematicLanding() {
   const springScale = useSpring(cardScale, { stiffness: 150, damping: 20 });
   const [tiltEnabled, setTiltEnabled] = useState(false);
   const [desktopReveal, setDesktopReveal] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeNavigation, setActiveNavigation] = useState("#top");
   const { scrollYProgress } = useScroll({
     target: storyRef,
@@ -270,13 +271,13 @@ export default function CinematicLanding() {
             <span className="brand__mark flex h-[54px] w-[54px] items-center justify-center rounded-full border-2 border-[#B87333] text-[27px] text-[#B87333]">DP</span>
             <span className="brand__name">BARREL <i>&</i> SPIRIT</span>
           </a>
-          <nav className="navigation" aria-label="Основная навигация">
+          <nav id="hero-mobile-navigation" className={`navigation${mobileMenuOpen ? " navigation--open" : ""}`} aria-label="Основная навигация">
             {navigation.map(([label, href]) => (
               <motion.a
                 key={label}
                 href={href}
                 aria-current={activeNavigation === href ? "location" : undefined}
-                onClick={() => setActiveNavigation(href)}
+                onClick={() => { setActiveNavigation(href); setMobileMenuOpen(false); }}
               >
                 {activeNavigation === href && (
                   <motion.span
@@ -291,7 +292,9 @@ export default function CinematicLanding() {
             ))}
           </nav>
           <a className="header-contact" href="#contacts">Связаться <span aria-hidden="true">↗</span></a>
-          <a className="mobile-contact" href="#contacts" aria-label="Связаться">↗</a>
+          <button className={`mobile-menu-toggle${mobileMenuOpen ? " mobile-menu-toggle--open" : ""}`} type="button" aria-label={mobileMenuOpen ? "Закрыть меню" : "Открыть меню"} aria-expanded={mobileMenuOpen} aria-controls="hero-mobile-navigation" onClick={() => setMobileMenuOpen((open) => !open)}>
+            <span /><span /><span />
+          </button>
         </header>
 
         <motion.div
