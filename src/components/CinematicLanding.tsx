@@ -139,6 +139,7 @@ export default function CinematicLanding() {
   const storyRef = useRef<HTMLDivElement>(null);
   const storySectionsRef = useRef<HTMLDivElement>(null);
   const philosophyRef = useRef<HTMLElement>(null);
+  const heroVideoRef = useRef<HTMLVideoElement>(null);
   const reduceMotion = useReducedMotion();
   const tiltX = useMotionValue(0);
   const tiltY = useMotionValue(0);
@@ -162,6 +163,24 @@ export default function CinematicLanding() {
     updateRevealMode();
     media.addEventListener("change", updateRevealMode);
     return () => media.removeEventListener("change", updateRevealMode);
+  }, []);
+
+  useEffect(() => {
+    const media = window.matchMedia("(max-width: 767px)");
+    let isMobile = media.matches;
+    const reloadHeroSource = () => {
+      if (media.matches === isMobile) return;
+      isMobile = media.matches;
+      const video = heroVideoRef.current;
+      video?.load();
+      if (video) void video.play().catch(() => {});
+    };
+    media.addEventListener("change", reloadHeroSource);
+    window.addEventListener("resize", reloadHeroSource, { passive: true });
+    return () => {
+      media.removeEventListener("change", reloadHeroSource);
+      window.removeEventListener("resize", reloadHeroSource);
+    };
   }, []);
 
   useEffect(() => {
@@ -201,6 +220,7 @@ export default function CinematicLanding() {
     <main ref={storyRef} className="cinematic-story">
       <section className="hero hero--sticky" aria-labelledby="hero-title">
         <video
+          ref={heroVideoRef}
           className="hero__video brightness-[1.03]"
           autoPlay
           muted
@@ -209,6 +229,7 @@ export default function CinematicLanding() {
           preload="auto"
           aria-hidden="true"
         >
+          <source src="/медиа/hero/hero_mobile.mp4" type="video/mp4" media="(max-width: 767px)" />
           <source src="/медиа/hero/hero.mp4" type="video/mp4" />
         </video>
         <motion.div className="hero__global-shade" style={{ opacity: reduceMotion ? 0.23 : overlayOpacity }} aria-hidden="true" />
