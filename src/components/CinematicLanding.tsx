@@ -7,6 +7,7 @@ import CollectionSection from "@/components/CollectionSection";
 import Footer from "@/components/Footer";
 import WorkshopGallery from "@/components/WorkshopGallery";
 import AgingUseSection from "@/components/AgingUseSection";
+import ContactModal from "@/components/ContactModal";
 
 const navigation = [
   ["Главная", "#top"],
@@ -151,6 +152,7 @@ export default function CinematicLanding() {
   const [tiltEnabled, setTiltEnabled] = useState(false);
   const [desktopReveal, setDesktopReveal] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [contactOpen, setContactOpen] = useState(false);
   const [activeNavigation, setActiveNavigation] = useState("#top");
   const { scrollYProgress } = useScroll({
     target: storyRef,
@@ -290,8 +292,9 @@ export default function CinematicLanding() {
                 <span className="navigation__label">{label}</span>
               </motion.a>
             ))}
+            <button className="navigation__contact" type="button" onClick={() => { setMobileMenuOpen(false); setContactOpen(true); }}>Связаться</button>
           </nav>
-          <a className="header-contact" href="#contacts">Связаться <span aria-hidden="true">↗</span></a>
+          <button className="header-contact" type="button" onClick={() => setContactOpen(true)}>Связаться <span aria-hidden="true">↗</span></button>
           <button className={`mobile-menu-toggle${mobileMenuOpen ? " mobile-menu-toggle--open" : ""}`} type="button" aria-label={mobileMenuOpen ? "Закрыть меню" : "Открыть меню"} aria-expanded={mobileMenuOpen} aria-controls="hero-mobile-navigation" onClick={() => setMobileMenuOpen((open) => !open)}>
             <span /><span /><span />
           </button>
@@ -312,16 +315,8 @@ export default function CinematicLanding() {
           </div>
         </motion.div>
 
-        <button
-          type="button"
-          onClick={scrollToPhilosophy}
-          aria-label="Листать к философии"
-          className="hero__scroll-button absolute bottom-8 left-1/2 z-30 flex -translate-x-1/2 items-center gap-3 cursor-pointer group pointer-events-auto select-none px-5 py-3"
-        >
-          <span className="hero__scroll-label">Листать</span>
-          <span aria-hidden="true" className="hero__scroll-arrow">↓</span>
-        </button>
       </section>
+      <ContactModal open={contactOpen} onClose={() => setContactOpen(false)} />
 
       <div ref={storySectionsRef} className="story-sections">
       <WorkshopSparks sectionRef={storyRef} />
