@@ -1,10 +1,11 @@
 .footer {
   position: relative;
   overflow: hidden;
-  padding: clamp(64px, 8vw, 118px) clamp(24px, 7vw, 112px) 24px;
+  padding: clamp(64px, 7vw, 96px) clamp(20px, 5vw, 72px) 24px;
   isolation: isolate;
   background: linear-gradient(180deg, #141311 0%, #11100e 100%);
   color: var(--ivory);
+  text-align: center;
 }
 
 .inner,
@@ -16,15 +17,52 @@
 }
 
 .inner {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(150px, 220px) auto;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: clamp(38px, 6vw, 92px);
 }
+
+.brandName {
+  display: inline-block;
+  color: var(--ivory);
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(42px, 5vw, 68px);
+  font-weight: 500;
+  letter-spacing: -.045em;
+  line-height: 1.1;
+  text-decoration: none;
+  transition: color .25s ease;
+}
+
+.brandName:hover { color: var(--honey); }
+
+.tagline {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(12px, 2vw, 28px);
+  margin: 14px 0 0;
+  color: #d1b99a;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(16px, 2vw, 24px);
+  font-style: italic;
+  line-height: 1.4;
+}
+
+.tagline::before,
+.tagline::after {
+  width: clamp(24px, 8vw, 112px);
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(184, 115, 51, .78));
+  content: "";
+}
+
+.tagline::after { transform: scaleX(-1); }
 
 .emblem {
   display: grid;
-  width: 100%;
+  width: clamp(220px, 24vw, 300px);
+  margin: 8px auto 18px;
   place-items: center;
 }
 
@@ -35,94 +73,114 @@
   object-fit: contain;
 }
 
-.brandName {
-  display: inline-block;
-  color: var(--ivory);
-  font-family: 'Playfair Display', Georgia, serif;
-  font-size: clamp(32px, 3.2vw, 46px);
-  font-weight: 500;
-  letter-spacing: -.035em;
-  line-height: 1.1;
-  transition: color .25s ease;
-}
-
-.brandName:hover { color: var(--honey); }
-
-.tagline {
-  margin: 18px 0 0;
-  color: rgba(209, 203, 192, .75);
-  font-family: 'Playfair Display', Georgia, serif;
-  font-size: 16px;
-  font-style: italic;
-  line-height: 1.5;
-}
-
-.linksArea {
-  display: grid;
-  grid-template-columns: minmax(112px, 1fr) minmax(160px, 1.25fr);
-  gap: clamp(28px, 4vw, 60px);
-  padding-left: clamp(24px, 3vw, 44px);
-  border-left: 1px solid rgba(212, 155, 91, .2);
-}
-
-.heading {
-  margin: 0 0 20px;
-  color: var(--honey);
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: .18em;
-  text-transform: uppercase;
-}
-
-.navigation ul,
 .socials {
-  display: grid;
-  gap: 12px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
+  display: flex;
+  width: min(100%, 760px);
+  justify-content: center;
+  gap: clamp(16px, 3vw, 44px);
 }
 
-.navigation a,
-.socials a {
-  color: rgba(237, 232, 223, .78);
-  font-size: 14px;
-  line-height: 1.5;
-  transition: color .25s ease;
+.socialLink,
+.backToTop {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  border: 1px solid rgba(184, 115, 51, .82);
+  border-radius: 999px;
+  background: linear-gradient(135deg, rgba(184, 115, 51, .13), rgba(20, 19, 17, .46));
+  color: var(--ivory);
+  text-decoration: none;
+  transition: border-color .24s ease, background .24s ease, box-shadow .24s ease, color .24s ease;
 }
 
-.navigation a:hover,
-.socials a:hover { color: var(--honey); }
+.socialLink {
+  min-width: 0;
+  width: min(100%, 288px);
+  min-height: 58px;
+  padding: 10px 20px;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(20px, 2vw, 25px);
+}
+
+.socialLink svg {
+  width: 30px;
+  height: 30px;
+  flex: 0 0 auto;
+}
+
+.backToTop {
+  min-width: 220px;
+  min-height: 48px;
+  margin-top: 22px;
+  padding: 8px 24px;
+  color: #e6d2b5;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 17px;
+}
+
+.backToTop svg { width: 20px; height: 20px; color: var(--honey); }
+
+.socialLink:hover,
+.backToTop:hover {
+  border-color: var(--honey);
+  background: rgba(184, 115, 51, .22);
+  box-shadow: 0 0 22px rgba(184, 115, 51, .18);
+  color: var(--honey);
+}
+
+.socialLink:focus-visible,
+.backToTop:focus-visible,
+.brandName:focus-visible {
+  outline: 2px solid var(--honey);
+  outline-offset: 4px;
+}
 
 .bottom {
-  margin-top: clamp(58px, 8vw, 104px);
-  padding-top: 20px;
-  border-top: 1px solid rgba(212, 155, 91, .22);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(18px, 4vw, 64px);
+  margin-top: clamp(36px, 5vw, 56px);
 }
+
+.bottom::before,
+.bottom::after {
+  width: min(34%, 520px);
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(212, 155, 91, .5));
+  content: "";
+}
+
+.bottom::after { transform: scaleX(-1); }
 
 .bottom p {
+  flex: 0 0 auto;
   margin: 0;
-  color: rgba(209, 203, 192, .52);
-  font-size: 11px;
-  letter-spacing: .08em;
+  color: rgba(209, 203, 192, .72);
+  font-size: 12px;
+  letter-spacing: .06em;
 }
 
-@media (max-width: 767px) {
-  .footer { padding: 56px 24px 20px; }
-  .inner { grid-template-columns: minmax(0, 1fr); justify-items: start; gap: 28px; }
-  .emblem { width: 128px; justify-self: center; }
-  .linksArea { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; width: 100%; padding: 0; border-left: 0; }
-  .tagline { margin-top: 12px; }
-  .navigation ul, .socials { gap: 12px; }
-  .bottom { margin-top: 40px; }
+@media (max-width: 640px) {
+  .footer { padding: 52px 20px 22px; }
+  .brandName { font-size: clamp(36px, 9vw, 48px); }
+  .tagline { gap: 10px; font-size: clamp(14px, 4vw, 18px); }
+  .tagline::before,
+  .tagline::after { width: clamp(18px, 6vw, 28px); }
+  .emblem { width: clamp(190px, 52vw, 230px); margin: 8px auto 14px; }
+  .socials { flex-direction: column; align-items: center; gap: 12px; }
+  .socialLink { min-height: 60px; font-size: 21px; }
+  .socialLink svg { width: 26px; height: 26px; }
+  .backToTop { min-height: 46px; margin-top: 18px; }
+  .bottom { gap: 12px; margin-top: 34px; }
+  .bottom::before,
+  .bottom::after { flex: 1 1 auto; width: auto; }
+  .bottom p { font-size: 10px; }
 }
 
-@media (max-width: 420px) {
-  .linksArea { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+@media (prefers-reduced-motion: reduce) {
+  .brandName,
+  .socialLink,
+  .backToTop { transition: none; }
 }
-
-@media (max-width: 380px) {
-  .footer { padding-right: 20px; padding-left: 20px; }
-  .brandName { font-size: 30px; }
-}
-
