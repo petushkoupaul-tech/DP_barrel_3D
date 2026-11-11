@@ -341,16 +341,18 @@ export default function CinematicLanding() {
             >
               Философия
             </motion.h2>
+            <div className="philosophy__ornament" aria-hidden="true"><span /><svg viewBox="0 0 112 18"><path d="M56 9C48 9 42 5 38 1M56 9C64 9 70 5 74 1M56 9C48 9 42 13 38 17M56 9C64 9 70 13 74 17M56 9H32M56 9H80"/><path d="M45 5C39 5 35 3 32 0C38 0 43 1 45 5ZM67 5C73 5 77 3 80 0C74 0 69 1 67 5ZM45 13C39 13 35 15 32 18C38 18 43 17 45 13ZM67 13C73 13 77 15 80 18C74 18 69 17 67 13Z"/></svg><span /></div>
             <motion.blockquote
-              className="my-8 border-l-2 border-[#B87333] pl-5 font-serif text-2xl italic leading-snug text-[#EDE8DF]/95 lg:text-[26px]"
+              className="philosophy__quote my-8 border-l-2 border-[#B87333] pl-5 font-serif text-2xl italic leading-snug text-[#EDE8DF]/95 lg:text-[26px]"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.2 }}
               transition={desktopReveal ? { duration: 0.8, delay: 0.55 } : { duration: 0.5, delay: 0 }}
             >
-              «Качество — это делать всё правильно, даже когда никто не смотрит». — Генри Форд
+              <span>«Качество — это делать всё правильно, даже когда никто не смотрит».</span>
+              <cite>— Генри Форд</cite>
             </motion.blockquote>
-            <div className="space-y-5 font-sans text-base leading-relaxed text-[#D1CBC0] lg:text-[19px]">
+            <div className="space-y-6 font-sans text-base leading-relaxed text-[#D1CBC0] lg:text-[19px]">
               <motion.p
                 initial={{ opacity: 0, y: 15 }}
                 whileInView={{ opacity: 1, y: 0 }}
