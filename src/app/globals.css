@@ -296,7 +296,7 @@ h1 em { color: inherit; font-weight: 500; }
 .aging-use__row + .aging-use__row { padding-top: clamp(28px, 3.4vw, 44px); border-top: 1px solid rgba(138,90,54,.32); }
 .aging-use__row--reverse .aging-use__media { order: 2; }
 .aging-use__row--reverse .aging-use__copy { order: 1; }
-.aging-use__media { position: relative; justify-self: center; width: min(100%, 410px); height: auto; aspect-ratio: 4 / 5; margin: 0; overflow: hidden; border: 1px solid rgba(184,115,51,.34); background: #1b1915; box-shadow: 0 18px 48px rgba(0,0,0,.32); }
+.aging-use__media { position: relative; justify-self: center; width: min(100%, 410px); height: auto; aspect-ratio: 4 / 5; margin: 0; overflow: hidden; border: 1px solid rgba(184,115,51,.34); border-radius: 10px; background: #1b1915; box-shadow: 0 18px 48px rgba(0,0,0,.32); }
 .aging-use__media img { object-fit: cover; transition: transform .7s cubic-bezier(.22,1,.36,1), filter .7s ease; }
 .aging-use__media:hover img { transform: scale(1.025); filter: brightness(1.04); }
 .aging-use__media figcaption, .aging-use__interior-photo figcaption { position: absolute; right: 0; bottom: 0; left: 0; display: flex; align-items: center; gap: 14px; padding: 22px 20px 16px; background: linear-gradient(to top, rgba(17,16,14,.78), rgba(17,16,14,0)); color: var(--honey); font-size: 10px; letter-spacing: .14em; }
