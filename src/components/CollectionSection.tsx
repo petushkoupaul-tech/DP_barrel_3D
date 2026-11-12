@@ -47,6 +47,7 @@ export default function CollectionSection() {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const lightboxRef = useRef<HTMLDivElement>(null);
   const lightboxOpener = useRef<HTMLElement | null>(null);
+  const lightboxTouchStartX = useRef<number | null>(null);
   const drag = useRef<{ pointerId: number; startX: number; delta: number; pitch: number } | null>(null);
   const reduceMotion = useReducedMotion();
   const count = products.length;
@@ -139,7 +140,7 @@ export default function CollectionSection() {
               <div className="collection__details-copy">
                 {specifications.map((item, itemIndex) => <div className="collection__detail-group" key={item.label}>
                   <article className="collection__detail"><span>0{itemIndex + 1}</span><div><h3>{item.label}</h3><p>{item.text}</p></div></article>
-                  {itemIndex < specifications.length - 1 && <div className="collection__detail-divider" aria-hidden="true">────── ⚜ ──────</div>}
+                  {itemIndex < specifications.length - 1 && <div className="collection__detail-divider" aria-hidden="true"><span className="collection__detail-divider-line">──────</span><span className="collection__detail-divider-mark">⚜</span><span className="collection__detail-divider-line">──────</span></div>}
                 </div>)}
               </div>
               <div className="collection__collage" aria-label="Фотографии изделий и деталей">
@@ -156,7 +157,20 @@ export default function CollectionSection() {
           <div className="collection__lightbox-content" onClick={(event) => event.stopPropagation()}>
             <button type="button" className="collection__lightbox-close" onClick={() => setLightboxIndex(null)} aria-label="Закрыть просмотр">×</button>
             <button type="button" className="collection__lightbox-arrow collection__lightbox-arrow--previous" onClick={() => setLightboxIndex((current) => current === null ? null : (current - 1 + detailPhotos.length) % detailPhotos.length)} aria-label="Предыдущее фото">←</button>
-            <div className="collection__lightbox-image">
+            <div
+              className="collection__lightbox-image"
+              onTouchStart={(event) => {
+                if (window.matchMedia("(max-width: 700px)").matches) lightboxTouchStartX.current = event.touches[0]?.clientX ?? null;
+              }}
+              onTouchEnd={(event) => {
+                const startX = lightboxTouchStartX.current;
+                lightboxTouchStartX.current = null;
+                if (startX === null || !window.matchMedia("(max-width: 700px)").matches) return;
+                const distance = event.changedTouches[0]?.clientX - startX;
+                if (distance > 50) setLightboxIndex((current) => current === null ? null : (current - 1 + detailPhotos.length) % detailPhotos.length);
+                if (distance < -50) setLightboxIndex((current) => current === null ? null : (current + 1) % detailPhotos.length);
+              }}
+            >
               <Image src={`/media/collection/details/${detailPhotos[lightboxIndex][0]}`} alt={detailPhotos[lightboxIndex][1]} fill sizes="94vw" quality={90} className="collection__lightbox-img" />
             </div>
             <button type="button" className="collection__lightbox-arrow collection__lightbox-arrow--next" onClick={() => setLightboxIndex((current) => current === null ? null : (current + 1) % detailPhotos.length)} aria-label="Следующее фото">→</button>

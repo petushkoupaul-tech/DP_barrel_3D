@@ -97,6 +97,7 @@ export default function WorkshopGallery() {
   const [tiltEnabled, setTiltEnabled] = useState(false);
   const [index, setIndex] = useState(0);
   const [locked, setLocked] = useState(false);
+  const swipeStart = useRef<{ pointerId: number; x: number; y: number } | null>(null);
   useEffect(() => {
     const media = window.matchMedia("(min-width: 768px)");
     const updateGalleryMode = () => setDesktopGallery(media.matches);
@@ -113,6 +114,23 @@ export default function WorkshopGallery() {
   }, []);
   const timer = (delta: number) => { if (locked) return; setLocked(true); setIndex(current => (current + delta + workshopPhotos.length) % workshopPhotos.length); window.setTimeout(() => setLocked(false), reducedMotion ? 10 : 690); };
   const keyDown = (event: KeyboardEvent<HTMLDivElement>) => { if (event.key === "ArrowRight") { event.preventDefault(); timer(1); } if (event.key === "ArrowLeft") { event.preventDefault(); timer(-1); } };
+  const pointerDown = (event: PointerEvent<HTMLDivElement>) => {
+    if (event.pointerType !== "touch" || !event.isPrimary) return;
+    swipeStart.current = { pointerId: event.pointerId, x: event.clientX, y: event.clientY };
+    event.currentTarget.setPointerCapture(event.pointerId);
+  };
+  const pointerUp = (event: PointerEvent<HTMLDivElement>) => {
+    const start = swipeStart.current;
+    swipeStart.current = null;
+    if (!start || start.pointerId !== event.pointerId) return;
+    const deltaX = event.clientX - start.x;
+    const deltaY = event.clientY - start.y;
+    if (Math.abs(deltaX) < 48 || Math.abs(deltaX) <= Math.abs(deltaY)) return;
+    timer(deltaX < 0 ? 1 : -1);
+  };
+  const pointerCancel = (event: PointerEvent<HTMLDivElement>) => {
+    if (swipeStart.current?.pointerId === event.pointerId) swipeStart.current = null;
+  };
 
   return (
     <section id="workshop" className={`workshop${reducedMotion ? " workshop--reduced-motion" : ""}`} aria-labelledby="workshop-title">
@@ -127,7 +145,7 @@ export default function WorkshopGallery() {
         </div>
 
         <div className="workshop__gallery" aria-label="Галерея фотографий мастерской">
-          <div className="workshop__gallery-depth" onKeyDown={keyDown} tabIndex={0} role="group" aria-label={`Фотография ${index + 1} из 6`} aria-roledescription="галерея">
+          <div className="workshop__gallery-depth" onKeyDown={keyDown} onPointerDown={pointerDown} onPointerUp={pointerUp} onPointerCancel={pointerCancel} tabIndex={0} role="group" aria-label={`Фотография ${index + 1} из 6`} aria-roledescription="галерея">
             {workshopPhotos.map((photo, photoIndex) => {
               const position = (photoIndex - index + workshopPhotos.length) % workshopPhotos.length;
               return <GalleryPhoto key={photo.src.src} photo={photo} photoIndex={photoIndex} position={position} reducedMotion={Boolean(reducedMotion)} desktopGallery={desktopGallery} tiltEnabled={tiltEnabled} onActivate={() => timer(1)} />;
