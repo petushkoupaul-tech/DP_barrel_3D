@@ -308,7 +308,6 @@ h1 em { color: inherit; font-weight: 500; }
 .aging-use__copy > p + p { margin-top: 18px; }
 .aging-use__manifesto { position: relative; width: min(100%, 720px); margin: clamp(24px, 3vw, 36px) 0 0 auto; padding-top: 12px; color: #E6D2B5; font-family: 'Playfair Display', Georgia, serif; font-size: 15px; font-style: italic; line-height: 1.5; text-align: right; }
 .aging-use__manifesto::after { position: absolute; top: 0; right: 0; left: 0; height: 1px; background: linear-gradient(to left, rgba(212,155,91,.36) 0%, rgba(212,155,91,.2) 54%, rgba(212,155,91,0) 100%); content: ""; }
-.aging-use__manifesto::before { margin-right: 9px; color: var(--honey); content: "/"; font-style: normal; }
 .aging-use__row--aftertaste { position: relative; isolation: isolate; }
 .aging-use__row--aftertaste::after { content: none; }
 .aging-use__row--aftertaste .aging-use__media, .aging-use__row--aftertaste .aging-use__copy { position: relative; z-index: 1; }
@@ -334,7 +333,9 @@ h1 em { color: inherit; font-weight: 500; }
 .aging-use__interior-surface { position: absolute; inset: 0; transform: perspective(1000px) rotateX(var(--interior-tilt-x, 0deg)) rotateY(var(--interior-tilt-y, 0deg)); transform-style: preserve-3d; transition: transform .9s cubic-bezier(.16,1,.3,1); }
 .aging-use__interior-surface::after { position: absolute; z-index: 1; inset: 0; pointer-events: none; background: radial-gradient(210px circle at var(--interior-light-x, 50%) var(--interior-light-y, 50%), rgba(212,155,91,.1), transparent 72%); content: ""; opacity: 0; transition: opacity .22s ease; }
 .aging-use__interior-photo img { object-fit: cover; transform: translate3d(var(--interior-parallax-x, 0px), var(--interior-parallax-y, 0px), 0); transition: transform .9s cubic-bezier(.16,1,.3,1); }
-.aging-use__interior-note { margin: 28px 0 0; color: var(--ivory); font-family: 'Playfair Display', Georgia, serif; font-size: 19px; font-style: italic; line-height: 1.55; text-align: center; }
+.aging-use__interior-note { position: relative; grid-column: 1 / -1; width: 100%; margin: 14px 0 0; padding-top: 12px; color: #E6D2B5; font-family: 'Playfair Display', Georgia, serif; font-size: 17px; font-style: italic; line-height: 1.55; text-align: center; }
+.aging-use__interior-note::before { position: absolute; top: 0; right: 0; left: 0; height: 1px; background: linear-gradient(to right, rgba(212,155,91,0), rgba(212,155,91,.2) 22%, rgba(212,155,91,.36) 50%, rgba(212,155,91,.2) 78%, rgba(212,155,91,0)); content: ""; }
+@media (min-width: 768px) { .aging-use__interior-note { white-space: nowrap; } }
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
   .aging-use__interior-photo:hover .aging-use__interior-surface, .aging-use__interior-photo:hover img { transition-duration: .08s; }
   .aging-use__interior-photo:hover .aging-use__interior-surface::after { opacity: 1; }

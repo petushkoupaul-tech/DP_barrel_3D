@@ -42,9 +42,12 @@ function WorkshopSparks({ sectionRef }: { sectionRef: RefObject<HTMLElement | nu
     let width = 0;
     let height = 0;
     let particles: Spark[] = [];
+    let protectedRects: Array<{ left: number; top: number; right: number; bottom: number }> = [];
     let frameId = 0;
     let isVisible = false;
     let lastTime = 0;
+    let lastProtectedRectsUpdate = 0;
+    let protectedRectsDirty = true;
 
     const random = (min: number, max: number) => min + Math.random() * (max - min);
     const makeSpark = (y = random(0, height)) => ({
@@ -57,6 +60,25 @@ function WorkshopSparks({ sectionRef }: { sectionRef: RefObject<HTMLElement | nu
       glow: Math.random() < 0.3,
     });
 
+    const updateProtectedRects = () => {
+      const clearance = 10;
+      protectedRects = Array.from(document.querySelectorAll<HTMLElement>(
+        "h1, h2, h3, h4, h5, h6, p, blockquote, cite, li, span, strong, em, label, button, a, figure, img, input, textarea, select, [role='tab'], [role='button'], [role='link']",
+      )).flatMap((element) => {
+        const rect = element.getBoundingClientRect();
+        if (!element.getClientRects().length || rect.width === 0 || rect.height === 0) return [];
+        return [{
+          left: rect.left - clearance,
+          top: rect.top - clearance,
+          right: rect.right + clearance,
+          bottom: rect.bottom + clearance,
+        }];
+      });
+      lastProtectedRectsUpdate = performance.now();
+      protectedRectsDirty = false;
+    };
+    const handleScroll = () => { protectedRectsDirty = true; };
+
     const resize = () => {
       width = window.innerWidth;
       height = window.innerHeight;
@@ -66,6 +88,7 @@ function WorkshopSparks({ sectionRef }: { sectionRef: RefObject<HTMLElement | nu
       canvas.style.width = `${width}px`;
       canvas.style.height = `${height}px`;
       context.setTransform(dpr, 0, 0, dpr, 0, 0);
+      updateProtectedRects();
       const count = window.innerWidth >= 1024 ? 42 : 19;
       particles = Array.from({ length: count }, () => makeSpark());
     };
@@ -76,6 +99,7 @@ function WorkshopSparks({ sectionRef }: { sectionRef: RefObject<HTMLElement | nu
       const frameScale = Math.min((time - lastTime) / 16.67, 2);
       lastTime = time;
       context.clearRect(0, 0, width, height);
+      if (protectedRectsDirty || time - lastProtectedRectsUpdate > 100) updateProtectedRects();
 
       for (const spark of particles) {
         spark.y -= spark.speed * frameScale;
@@ -86,6 +110,12 @@ function WorkshopSparks({ sectionRef }: { sectionRef: RefObject<HTMLElement | nu
           spark.speed = random(0.3, 0.85);
           spark.phase = random(0, Math.PI * 2);
         }
+
+        const visibleRadius = spark.radius + (spark.glow ? 5 : 0);
+        if (protectedRects.some((rect) =>
+          spark.x + visibleRadius >= rect.left && spark.x - visibleRadius <= rect.right &&
+          spark.y + visibleRadius >= rect.top && spark.y - visibleRadius <= rect.bottom
+        )) continue;
 
         context.globalAlpha = 0.45 + Math.sin(time * 0.0015 + spark.phase) * 0.3;
         context.fillStyle = spark.color;
@@ -125,11 +155,13 @@ function WorkshopSparks({ sectionRef }: { sectionRef: RefObject<HTMLElement | nu
       }
     };
     window.addEventListener("resize", handleResize, { passive: true });
+    window.addEventListener("scroll", handleScroll, { passive: true });
 
     return () => {
       stop();
       observer.disconnect();
       window.removeEventListener("resize", handleResize);
+      window.removeEventListener("scroll", handleScroll);
       context.clearRect(0, 0, width, height);
     };
   }, [sectionRef]);
