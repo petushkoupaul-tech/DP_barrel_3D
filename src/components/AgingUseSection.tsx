@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { useEffect, useState, type KeyboardEvent } from "react";
+import { useEffect, useState, type KeyboardEvent, type PointerEvent as ReactPointerEvent } from "react";
 
 type SectionTab = "aging" | "interior";
 
@@ -34,6 +34,41 @@ const interiorPhotos = [
 function updateSectionHash(tab: SectionTab) {
   const hash = tab === "aging" ? "#aging" : "#use";
   if (window.location.hash !== hash) window.history.replaceState(null, "", hash);
+}
+
+function handleInteriorCardPointerMove(event: ReactPointerEvent<HTMLElement>) {
+  if (
+    event.pointerType !== "mouse" ||
+    !window.matchMedia("(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)").matches
+  ) {
+    return;
+  }
+
+  const card = event.currentTarget;
+  const { left, top, width, height } = card.getBoundingClientRect();
+  if (width === 0 || height === 0) return;
+
+  const pointerX = Math.max(0, Math.min(1, (event.clientX - left) / width));
+  const pointerY = Math.max(0, Math.min(1, (event.clientY - top) / height));
+  const centeredX = (pointerX - 0.5) * 2;
+  const centeredY = (pointerY - 0.5) * 2;
+
+  card.style.setProperty("--interior-tilt-x", `${-centeredY * 5}deg`);
+  card.style.setProperty("--interior-tilt-y", `${centeredX * 5}deg`);
+  card.style.setProperty("--interior-light-x", `${pointerX * 100}%`);
+  card.style.setProperty("--interior-light-y", `${pointerY * 100}%`);
+  card.style.setProperty("--interior-parallax-x", `${-centeredX * 1.5}px`);
+  card.style.setProperty("--interior-parallax-y", `${-centeredY * 1.5}px`);
+}
+
+function resetInteriorCardPointer(event: ReactPointerEvent<HTMLElement>) {
+  const card = event.currentTarget;
+  card.style.setProperty("--interior-tilt-x", "0deg");
+  card.style.setProperty("--interior-tilt-y", "0deg");
+  card.style.setProperty("--interior-light-x", "50%");
+  card.style.setProperty("--interior-light-y", "50%");
+  card.style.setProperty("--interior-parallax-x", "0px");
+  card.style.setProperty("--interior-parallax-y", "0px");
 }
 
 export default function AgingUseSection() {
@@ -185,12 +220,16 @@ export default function AgingUseSection() {
                     <motion.figure
                       className="aging-use__interior-photo"
                       key={photo.src}
+                      onPointerMove={handleInteriorCardPointerMove}
+                      onPointerLeave={resetInteriorCardPointer}
                       variants={{
                         hidden: reduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 },
                         visible: { opacity: 1, y: 0, transition: { duration: reduceMotion ? 0 : 0.48, delay: reduceMotion ? 0 : 0.25 + interiorPhotos.indexOf(photo) * 0.15, ease: [0.22, 1, 0.36, 1] } },
                       }}
                     >
-                      <Image src={photo.src} alt={photo.alt} fill sizes="(max-width: 700px) 88vw, (max-width: 1100px) 44vw, 600px" quality={88} />
+                      <div className="aging-use__interior-surface">
+                        <Image src={photo.src} alt={photo.alt} fill sizes="(max-width: 700px) 88vw, (max-width: 1100px) 44vw, 600px" quality={88} />
+                      </div>
                     </motion.figure>
                   ))}
                 </div>
