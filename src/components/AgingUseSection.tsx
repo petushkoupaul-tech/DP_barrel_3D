@@ -191,7 +191,6 @@ export default function AgingUseSection() {
                       }}
                     >
                       <Image src={photo.src} alt={photo.alt} fill sizes="(max-width: 700px) 88vw, (max-width: 1100px) 44vw, 600px" quality={88} />
-                      <figcaption><span>В ДЕТАЛЯХ ПРОСТРАНСТВА</span></figcaption>
                     </motion.figure>
                   ))}
                 </div>
