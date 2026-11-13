@@ -161,6 +161,13 @@ h1 em { color: inherit; font-weight: 500; }
 .collection__tabs button:hover, .aging-use__tabs button:hover { border-color: rgba(212,155,91,.54); background: rgba(184,115,51,.13); color: var(--ivory); }
 .collection__tabs button:active, .aging-use__tabs button:active { transform: scale(.97); }
 .collection__gallery { min-width: 0; }
+.collection__ornament { position: relative; display: flex; width: min(300px, 72vw); height: 14px; align-items: center; justify-content: center; margin: 18px auto; }
+.collection__ornament::before, .collection__ornament::after { position: absolute; top: 50%; width: calc(50% - 23px); height: 1px; border-radius: 999px; background: linear-gradient(to right, transparent, #B87333 24%, #D49B5B 100%); content: ""; }
+.collection__ornament::before { left: 0; }
+.collection__ornament::after { right: 0; transform: scaleX(-1); }
+.collection__ornament i { position: absolute; top: 50%; width: 8px; height: 8px; border: 1px solid #D49B5B; border-radius: 100% 0 100% 0; }
+.collection__ornament i:first-child { left: calc(50% - 7px); transform: translateY(-50%) rotate(45deg); }
+.collection__ornament i:last-child { right: calc(50% - 7px); transform: translateY(-50%) rotate(225deg); }
 .collection__stage { position: relative; width: 100%; height: clamp(300px, 42vw, 510px); overflow: hidden; touch-action: pan-y; user-select: none; -webkit-user-select: none; }
 .collection__stage:focus-visible { outline: 1px solid var(--honey); outline-offset: 5px; }
 .collection__stage--dragging { cursor: grabbing; }

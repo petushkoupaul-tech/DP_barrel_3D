@@ -125,6 +125,7 @@ export default function CollectionSection() {
         <AnimatePresence mode="wait" initial={false}>
           {tab === "gallery" ? (
             <motion.div key="gallery" className="collection__gallery" role="tabpanel" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: reduceMotion ? 0 : 0.45 }}>
+              <div className="collection__ornament" aria-hidden="true"><i /><i /></div>
               <div className={`collection__stage${dragging ? " collection__stage--dragging" : ""}`} style={{ "--collection-drag-offset": `${dragOffset}px` } as CSSProperties} onPointerDown={handlePointerDown} onPointerMove={handlePointerMove} onPointerUp={handlePointerEnd} onPointerCancel={handlePointerCancel} onKeyDown={handleKeyDown} role="group" tabIndex={0} aria-label="Галерея изделий. Перетаскивайте фотографии или используйте клавиши со стрелками.">
                 {[-2, -1, 0, 1, 2].map((offset) => {
                   const photoIndex = (index + offset + count) % count;
@@ -134,6 +135,7 @@ export default function CollectionSection() {
                   </motion.figure>;
                 })}
               </div>
+              <div className="collection__ornament" aria-hidden="true"><i /><i /></div>
             </motion.div>
           ) : (
             <motion.div key="details" className="collection__details" role="tabpanel" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: reduceMotion ? 0 : 0.45 }}>
