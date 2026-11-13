@@ -76,20 +76,26 @@ h1 em { color: inherit; font-weight: 500; }
 }
 @media (max-width: 767px) {
   .brand__name { display: none; }
-  .hero__content-scroll { transform: translateY(-90px); }
   .hero { position: sticky; background: #181512; }
-  .hero__video { animation: hero-video-drift linear both; animation-timeline: scroll(root block); animation-range: 0 100svh; object-fit: contain; object-position: center; }
-  .hero__shade { background: linear-gradient(to bottom, rgba(17,16,14,.2) 0%, rgba(17,16,14,.06) 16%, transparent 34%), linear-gradient(to right, rgba(17,16,14,.25), transparent 75%); }
+  .hero__video { inset: 0; width: 100%; height: 100%; translate: 0 -12rem; animation: hero-video-drift linear both; animation-timeline: scroll(root block); animation-range: 0 100svh; object-fit: contain; object-position: center bottom; }
+  .hero__shade { background: radial-gradient(ellipse 78% 38% at 32% 58%, rgba(17,16,14,.48) 0%, rgba(17,16,14,.2) 58%, transparent 100%), linear-gradient(to bottom, rgba(17,16,14,.24) 0%, rgba(17,16,14,.12) 34%, transparent 58%); }
+  .hero__content { height: 100svh; justify-content: flex-start; padding: clamp(80px, 10svh, 96px) 28px 0; }
   .hero__content-scroll { will-change: transform, opacity; }
+  .hero__copy-reveal { width: 100%; max-width: 100%; height: 70svh; justify-content: center; gap: clamp(22px, 4svh, 32px); }
+  .hero__tagline { margin-top: 0; font-size: clamp(17px, 4.5vw, 20px); line-height: 1.35; }
+  .hero__description { max-width: 420px; margin-top: 0; font-size: 14px; line-height: 1.6; }
+  .hero h1 { font-size: clamp(44px, 12vw, 54px); line-height: 1.02; }
   .hero > button { display: none; }
   .philosophy__reveal { will-change: opacity, transform; }
 }
 @media (max-width: 520px) {
   .hero { min-height: 100svh; }
-  .hero__content { min-height: 100svh; padding: 110px 25px 125px; }
-  .eyebrow { margin-bottom: 22px; font-size: 8px; letter-spacing: .15em; }
-  h1 { font-size: clamp(52px, 15vw, 72px); }
-  .hero__description { max-width: 330px; font-size: 13px; }
+  .hero__content { min-height: 100svh; padding: clamp(68px, 9svh, 82px) 24px 0; }
+  .hero__copy-reveal { height: 64svh; gap: clamp(20px, 3.5svh, 28px); }
+  .eyebrow { margin-bottom: 0; font-size: 8.5px; letter-spacing: .15em; }
+  .hero h1 { font-size: clamp(44px, 12.4vw, 52px); line-height: 1.02; }
+  .hero__copy-reveal > .hero__tagline { margin-top: 0; font-size: clamp(16px, 4.5vw, 18px); }
+  .hero__description { max-width: 350px; margin-top: 0; font-size: 14px; line-height: 1.55; }
   .desktop-break { display: none; }
 }
 @keyframes hero-copy-reveal {
