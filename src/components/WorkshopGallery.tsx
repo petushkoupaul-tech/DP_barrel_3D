@@ -1,29 +1,22 @@
 "use client";
 
-import Image, { type StaticImageData } from "next/image";
+import Image from "next/image";
 import { motion, useMotionValue, useReducedMotion, useSpring } from "framer-motion";
 import { useEffect, useRef, useState, type KeyboardEvent, type PointerEvent } from "react";
 
-import workshopOne from "../../медиа/4 мастерская и производство/1.png";
-import workshopTwo from "../../медиа/4 мастерская и производство/2.png";
-import workshopThree from "../../медиа/4 мастерская и производство/3.png";
-import workshopFour from "../../медиа/4 мастерская и производство/4.webp";
-import workshopFive from "../../медиа/4 мастерская и производство/5.png";
-import workshopSix from "../../медиа/4 мастерская и производство/6.png";
-
 type WorkshopPhoto = {
-  src: StaticImageData;
+  src: string;
   alt: string;
   position: string;
 };
 
 const workshopPhotos: readonly WorkshopPhoto[] = [
-  { src: workshopOne, alt: "Отбор древесины и подготовка заготовок", position: "50% 50%" },
-  { src: workshopTwo, alt: "Отбор древесины и подготовка заготовок", position: "50% 47%" },
-  { src: workshopThree, alt: "Контролируемый обжиг живым огнем", position: "52% 50%" },
-  { src: workshopFour, alt: "Контролируемый обжиг живым огнем", position: "50% 43%" },
-  { src: workshopFive, alt: "Сборка остова и натяжка обручей", position: "50% 50%" },
-  { src: workshopSix, alt: "Сборка остова и натяжка обручей", position: "50% 50%" },
+  { src: "/media/workshop/1.webp", alt: "Отбор древесины и подготовка заготовок", position: "50% 50%" },
+  { src: "/media/workshop/2.webp", alt: "Отбор древесины и подготовка заготовок", position: "50% 47%" },
+  { src: "/media/workshop/3.webp", alt: "Контролируемый обжиг живым огнем", position: "52% 50%" },
+  { src: "/media/workshop/4.webp", alt: "Контролируемый обжиг живым огнем", position: "50% 43%" },
+  { src: "/media/workshop/5.webp", alt: "Сборка остова и натяжка обручей", position: "50% 50%" },
+  { src: "/media/workshop/6.webp", alt: "Сборка остова и натяжка обручей", position: "50% 50%" },
 ];
 
 function GalleryPhoto({ photo, photoIndex, position, reducedMotion, desktopGallery, tiltEnabled, onActivate }: { photo: WorkshopPhoto; photoIndex: number; position: number; reducedMotion: boolean; desktopGallery: boolean; tiltEnabled: boolean; onActivate: () => void }) {
@@ -148,7 +141,7 @@ export default function WorkshopGallery() {
           <div className="workshop__gallery-depth" onKeyDown={keyDown} onPointerDown={pointerDown} onPointerUp={pointerUp} onPointerCancel={pointerCancel} tabIndex={0} role="group" aria-label={`Фотография ${index + 1} из 6`} aria-roledescription="галерея">
             {workshopPhotos.map((photo, photoIndex) => {
               const position = (photoIndex - index + workshopPhotos.length) % workshopPhotos.length;
-              return <GalleryPhoto key={photo.src.src} photo={photo} photoIndex={photoIndex} position={position} reducedMotion={Boolean(reducedMotion)} desktopGallery={desktopGallery} tiltEnabled={tiltEnabled} onActivate={() => timer(1)} />;
+              return <GalleryPhoto key={photo.src} photo={photo} photoIndex={photoIndex} position={position} reducedMotion={Boolean(reducedMotion)} desktopGallery={desktopGallery} tiltEnabled={tiltEnabled} onActivate={() => timer(1)} />;
             })}
             <button type="button" className="workshop__arrow workshop__arrow--previous" onClick={() => timer(-1)} disabled={locked} aria-label="Предыдущая фотография">←</button>
             <button type="button" className="workshop__arrow workshop__arrow--next" onClick={() => timer(1)} disabled={locked} aria-label="Следующая фотография">→</button>

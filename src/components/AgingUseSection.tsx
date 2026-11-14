@@ -7,26 +7,26 @@ import { useEffect, useState, type KeyboardEvent, type PointerEvent as ReactPoin
 type SectionTab = "aging" | "interior";
 
 const agingPhotos = [
-  ["/media/aging/1.png", "Дубовая бочка для выдержки рядом с бутылкой креплёного вина"],
-  ["/media/aging/2.png", "Напиток наливают из бочки с деревянным резным основанием"],
-  ["/media/aging/3.png", "Бокал напитка перед деревянной бочкой с гравировкой"],
+  ["/media/aging/1.webp", "Дубовая бочка для выдержки рядом с бутылкой креплёного вина"],
+  ["/media/aging/2.webp", "Напиток наливают из бочки с деревянным резным основанием"],
+  ["/media/aging/3.webp", "Бокал напитка перед деревянной бочкой с гравировкой"],
 ] as const;
 
 const interiorPhotos = [
   {
-    src: "/media/aging/interior-1.png",
+    src: "/media/aging/interior-1.webp",
     alt: "Декоративная бочка в современной домашней барной зоне",
   },
   {
-    src: "/media/aging/interior-2.png",
+    src: "/media/aging/interior-2.webp",
     alt: "Резная бочка на деревянном круглом столике в интерьере",
   },
   {
-    src: "/media/aging/interior-3.png",
+    src: "/media/aging/interior-3.webp",
     alt: "Бочка и деревянные кружки в тёплом лаунже",
   },
   {
-    src: "/media/aging/interior-4.png",
+    src: "/media/aging/interior-4.webp",
     alt: "Резные дубовые бочки выставлены на деревянных полках в интерьере",
   },
 ] as const;

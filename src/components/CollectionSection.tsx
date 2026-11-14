@@ -5,23 +5,23 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useEffect, useRef, useState, type CSSProperties, type KeyboardEvent, type PointerEvent } from "react";
 
 const products = [
-  ["10f00cd4-13f7-49a5-b02a-77f68b3a2dce.png", "Изделие из дуба с авторской отделкой"],
-  ["15e383bb-c154-4bcb-8c67-64f44df8a54d.png", "Деревянная бочка ручной работы"],
-  ["2562e493-997b-4787-82b6-9f7456fe2620.png", "Бочка из натурального дерева"],
-  ["5114b837-5976-450f-a16e-a303c8a8cb81.png", "Бочка с металлическим краном"],
-  ["6e344030-2a4f-49dd-8d21-d19f41252d9b.png", "Детали деревянного изделия"],
-  ["83d15055-0261-436d-9974-c54b3be63611.png", "Дубовый бочонок с отделкой"],
-  ["8627ceab-1923-40da-bdbc-654054c22062.png", "Бочка с выразительной текстурой дерева"],
-  ["8b634e12-3d9f-4dfd-8df8-747d7995505b.png", "Авторская бочка ручной работы"],
-  ["8e1d6411-486b-47d2-8ce8-8957ae7c6c2e.png", "Деревянная бочка с металлическими деталями"],
-  ["Бочонок мастера_ ремесленный виски.png", "Бочонок мастера для ремесленного виски"],
-  ["Декоративная дубовая бочка для виски.png", "Декоративная дубовая бочка для виски"],
-  ["Премиальная дубовая бочка с краном.png", "Дубовая бочка с краном"],
-  ["Резная дубовая бочка с латунным краном.png", "Резная дубовая бочка с латунным краном"],
-  ["Роскошный дубовый бочонок с латунным краном.png", "Дубовый бочонок с латунным краном"],
-  ["Рустикальная бочка с латунным краном и стопками.png", "Бочка с латунным краном и стопками"],
-  ["b364317c-5955-481e-a255-a4706cf681ab.png", "Фактура и отделка деревянного изделия"],
-  ["d362fd32-dbb9-4cba-b4b7-375dbf42e719.png", "Детали бочки ручной работы"],
+  ["10f00cd4-13f7-49a5-b02a-77f68b3a2dce.webp", "Изделие из дуба с авторской отделкой"],
+  ["15e383bb-c154-4bcb-8c67-64f44df8a54d.webp", "Деревянная бочка ручной работы"],
+  ["2562e493-997b-4787-82b6-9f7456fe2620.webp", "Бочка из натурального дерева"],
+  ["5114b837-5976-450f-a16e-a303c8a8cb81.webp", "Бочка с металлическим краном"],
+  ["6e344030-2a4f-49dd-8d21-d19f41252d9b.webp", "Детали деревянного изделия"],
+  ["83d15055-0261-436d-9974-c54b3be63611.webp", "Дубовый бочонок с отделкой"],
+  ["8627ceab-1923-40da-bdbc-654054c22062.webp", "Бочка с выразительной текстурой дерева"],
+  ["8b634e12-3d9f-4dfd-8df8-747d7995505b.webp", "Авторская бочка ручной работы"],
+  ["8e1d6411-486b-47d2-8ce8-8957ae7c6c2e.webp", "Деревянная бочка с металлическими деталями"],
+  ["Бочонок мастера_ ремесленный виски.webp", "Бочонок мастера для ремесленного виски"],
+  ["Декоративная дубовая бочка для виски.webp", "Декоративная дубовая бочка для виски"],
+  ["Премиальная дубовая бочка с краном.webp", "Дубовая бочка с краном"],
+  ["Резная дубовая бочка с латунным краном.webp", "Резная дубовая бочка с латунным краном"],
+  ["Роскошный дубовый бочонок с латунным краном.webp", "Дубовый бочонок с латунным краном"],
+  ["Рустикальная бочка с латунным краном и стопками.webp", "Бочка с латунным краном и стопками"],
+  ["8b634e12-3d9f-4dfd-8df8-747d7995505b.webp", "Фактура и отделка деревянного изделия"],
+  ["d362fd32-dbb9-4cba-b4b7-375dbf42e719.webp", "Детали бочки ручной работы"],
 ] as const;
 
 const specifications = [
@@ -31,12 +31,12 @@ const specifications = [
 ];
 
 const detailPhotos = [
-  ["2bfa069a-a23a-4e8e-92d3-ac241496c211.png", "Латунный кран и гравировка на дубовой бочке"],
-  ["1157d3f8-6ab9-463e-a34d-86faf9410282.png", "Детали резных деревянных изделий"],
-  ["5b848571-08cd-4a23-9560-a08e6f347cac.png", "Клеймо на древесине и металлические обручи"],
-  ["9d583cd1-83fe-4899-a828-61e2a67fd6de.png", "Текстура и обручи бочки на подставке"],
-  ["f1f40381-64d5-469e-97ba-b6ef42bc1579.png", "Гравированное донце и подставка бочки"],
-  ["fd1b69c6-6ba6-4b29-906c-1497911a89e9.png", "Дубовая бочка с латунным краном"],
+  ["2bfa069a-a23a-4e8e-92d3-ac241496c211.webp", "Латунный кран и гравировка на дубовой бочке"],
+  ["1157d3f8-6ab9-463e-a34d-86faf9410282.webp", "Детали резных деревянных изделий"],
+  ["5b848571-08cd-4a23-9560-a08e6f347cac.webp", "Клеймо на древесине и металлические обручи"],
+  ["9d583cd1-83fe-4899-a828-61e2a67fd6de.webp", "Текстура и обручи бочки на подставке"],
+  ["f1f40381-64d5-469e-97ba-b6ef42bc1579.webp", "Гравированное донце и подставка бочки"],
+  ["fd1b69c6-6ba6-4b29-906c-1497911a89e9.webp", "Дубовая бочка с латунным краном"],
 ] as const;
 
 export default function CollectionSection() {
@@ -147,7 +147,7 @@ export default function CollectionSection() {
               </div>
               <div className="collection__collage" aria-label="Фотографии изделий и деталей">
                 {detailPhotos.map(([src, alt], photoIndex) => <motion.button type="button" key={src} className={`collection__photo collection__photo--${photoIndex + 1}`} aria-label={`Открыть фотографию: ${alt}`} onClick={(event) => { lightboxOpener.current = event.currentTarget; setLightboxIndex(photoIndex); }} initial={{ opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.15 }} transition={{ duration: reduceMotion ? 0 : 0.55, delay: reduceMotion ? 0 : photoIndex * 0.055, ease: [0.22, 1, 0.36, 1] }}>
-                  <Image src={`/media/collection/details/${src}`} alt={alt} fill sizes="(max-width: 700px) 45vw, 12vw" quality={88} className="collection__photo-image" />
+                  <Image src={`/media/details/${src}`} alt={alt} fill sizes="(max-width: 700px) 45vw, 12vw" quality={88} className="collection__photo-image" />
                 </motion.button>)}
               </div>
             </motion.div>
@@ -173,7 +173,7 @@ export default function CollectionSection() {
                 if (distance < -50) setLightboxIndex((current) => current === null ? null : (current + 1) % detailPhotos.length);
               }}
             >
-              <Image src={`/media/collection/details/${detailPhotos[lightboxIndex][0]}`} alt={detailPhotos[lightboxIndex][1]} fill sizes="94vw" quality={90} className="collection__lightbox-img" />
+              <Image src={`/media/details/${detailPhotos[lightboxIndex][0]}`} alt={detailPhotos[lightboxIndex][1]} fill sizes="94vw" quality={90} className="collection__lightbox-img" />
             </div>
             <button type="button" className="collection__lightbox-arrow collection__lightbox-arrow--next" onClick={() => setLightboxIndex((current) => current === null ? null : (current + 1) % detailPhotos.length)} aria-label="Следующее фото">→</button>
           </div>

@@ -294,8 +294,8 @@ export default function CinematicLanding() {
           preload="auto"
           aria-hidden="true"
         >
-          <source src="/медиа/hero/hero_mobile.mp4" type="video/mp4" media="(max-width: 767px)" />
-          <source src="/медиа/hero/hero.mp4" type="video/mp4" />
+          <source src="/media/hero/hero_mobile.mp4" type="video/mp4" media="(max-width: 767px)" />
+          <source src="/media/hero/hero.mp4" type="video/mp4" />
         </video>
         <motion.div className="hero__global-shade" style={{ opacity: reduceMotion ? 0.23 : overlayOpacity }} aria-hidden="true" />
         <div className="hero__shade" aria-hidden="true" />
@@ -422,7 +422,7 @@ export default function CinematicLanding() {
                 onMouseLeave={tiltEnabled ? resetCardTilt : undefined}
               >
                 <Image
-                  src="/media/philosophy/2.png"
+                  src="/media/philosophy/2.webp"
                   alt="Дубовая бочка на резной подставке с гравированной кружкой"
                   fill
                   sizes="(max-width: 767px) 90vw, 42vw"
