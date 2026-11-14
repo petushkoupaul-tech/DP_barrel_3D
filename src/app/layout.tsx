@@ -2,6 +2,10 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://dp-barrel-spirits.vercel.app"),
+  alternates: {
+    canonical: "/",
+  },
   title: "DP Barrels & Spirit — Crafted by Nature. Aged by Time.",
   description:
     "Ремесленные деревянные бочки, созданные с вниманием к материалу, деталям и качеству.",
