@@ -39,36 +39,70 @@ const detailPhotos = [
   ["fd1b69c6-6ba6-4b29-906c-1497911a89e9.webp", "Дубовая бочка с латунным краном"],
 ] as const;
 
+type LightboxMode = "collection" | "details";
+
 export default function CollectionSection() {
   const [index, setIndex] = useState(0);
   const [tab, setTab] = useState<"gallery" | "details">("gallery");
   const [dragging, setDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState(0);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const [lightboxMode, setLightboxMode] = useState<LightboxMode | null>(null);
+  const [lightboxMediaFrame, setLightboxMediaFrame] = useState({ top: 8, right: 8 });
   const lightboxRef = useRef<HTMLDivElement>(null);
+  const lightboxImageRef = useRef<HTMLImageElement>(null);
   const lightboxOpener = useRef<HTMLElement | null>(null);
   const lightboxTouchStartX = useRef<number | null>(null);
   const drag = useRef<{ pointerId: number; startX: number; delta: number; pitch: number } | null>(null);
   const reduceMotion = useReducedMotion();
   const count = products.length;
-  const lightboxOpen = lightboxIndex !== null;
+  const lightboxOpen = lightboxIndex !== null && lightboxMode !== null;
+  const lightboxPhotos = lightboxMode === "collection" ? products : detailPhotos;
+  const lightboxPhoto = lightboxIndex === null || lightboxMode === null ? null : lightboxPhotos[lightboxIndex];
+  const closeLightbox = () => {
+    setLightboxIndex(null);
+    setLightboxMode(null);
+  };
+  const openLightbox = (mode: LightboxMode, photoIndex: number, opener: HTMLElement) => {
+    lightboxOpener.current = opener;
+    setLightboxMediaFrame({ top: 8, right: 8 });
+    setLightboxMode(mode);
+    setLightboxIndex(photoIndex);
+  };
+  const updateLightboxMediaFrame = (image = lightboxImageRef.current) => {
+    const container = image?.parentElement?.getBoundingClientRect();
+    if (!image || !container || !image.naturalWidth || !image.naturalHeight) return;
+    const scale = Math.min(container.width / image.naturalWidth, container.height / image.naturalHeight);
+    setLightboxMediaFrame({
+      top: Math.max(8, (container.height - image.naturalHeight * scale) / 2 + 8),
+      right: Math.max(8, (container.width - image.naturalWidth * scale) / 2 + 8),
+    });
+  };
   useEffect(() => {
     if (!lightboxOpen) return;
+    const previousHtmlOverflow = document.documentElement.style.overflow;
     const previousOverflow = document.body.style.overflow;
+    document.documentElement.style.overflow = "hidden";
     document.body.style.overflow = "hidden";
     lightboxRef.current?.focus();
     const handleLightboxKeys = (event: globalThis.KeyboardEvent) => {
-      if (event.key === "Escape") setLightboxIndex(null);
-      if (event.key === "ArrowLeft") setLightboxIndex((current) => current === null ? null : (current - 1 + detailPhotos.length) % detailPhotos.length);
-      if (event.key === "ArrowRight") setLightboxIndex((current) => current === null ? null : (current + 1) % detailPhotos.length);
+      const photoCount = lightboxMode === "collection" ? products.length : detailPhotos.length;
+      if (event.key === "Escape") closeLightbox();
+      if (event.key === "ArrowLeft") setLightboxIndex((current) => current === null ? null : (current - 1 + photoCount) % photoCount);
+      if (event.key === "ArrowRight") setLightboxIndex((current) => current === null ? null : (current + 1) % photoCount);
     };
+    const handleLightboxResize = () => updateLightboxMediaFrame();
     window.addEventListener("keydown", handleLightboxKeys);
+    window.addEventListener("resize", handleLightboxResize);
+    handleLightboxResize();
     return () => {
+      document.documentElement.style.overflow = previousHtmlOverflow;
       document.body.style.overflow = previousOverflow;
       window.removeEventListener("keydown", handleLightboxKeys);
+      window.removeEventListener("resize", handleLightboxResize);
       lightboxOpener.current?.focus();
     };
-  }, [lightboxOpen]);
+  }, [lightboxMode, lightboxOpen]);
   const finishDrag = () => {
     if (!drag.current) return;
     const steps = Math.round(-drag.current.delta / drag.current.pitch);
@@ -130,7 +164,7 @@ export default function CollectionSection() {
                 {[-2, -1, 0, 1, 2].map((offset) => {
                   const photoIndex = (index + offset + count) % count;
                   const [src, alt] = products[photoIndex];
-                  return <motion.figure key={photoIndex} className={`collection__slide collection__slide--${offset === 0 ? "active" : Math.abs(offset) === 1 ? offset < 0 ? "previous" : "next" : "distant"}`} style={{ "--collection-slide-offset": `${offset * 78}%` } as CSSProperties} initial={{ opacity: 0 }} animate={{ opacity: offset === 0 ? 1 : Math.abs(offset) === 1 ? 0.48 : 0.16, scale: offset === 0 ? 1 : Math.abs(offset) === 1 ? 0.82 : 0.68, rotate: Math.sign(offset) * (Math.abs(offset) === 1 ? 1.5 : 2) }} transition={{ duration: dragging || reduceMotion ? 0 : 0.62, ease: [0.22, 1, 0.36, 1] }}>
+                  return <motion.figure key={photoIndex} className={`collection__slide collection__slide--${offset === 0 ? "active" : Math.abs(offset) === 1 ? offset < 0 ? "previous" : "next" : "distant"}`} style={{ "--collection-slide-offset": `${offset * 78}%` } as CSSProperties} role={offset === 0 ? "button" : undefined} tabIndex={offset === 0 ? 0 : undefined} aria-label={offset === 0 ? `Открыть фотографию: ${alt}` : undefined} onClick={(event) => { if (offset === 0) openLightbox("collection", photoIndex, event.currentTarget); }} onKeyDown={(event) => { if (offset === 0 && (event.key === "Enter" || event.key === " ")) { event.preventDefault(); openLightbox("collection", photoIndex, event.currentTarget); } }} initial={{ opacity: 0 }} animate={{ opacity: offset === 0 ? 1 : Math.abs(offset) === 1 ? 0.48 : 0.16, scale: offset === 0 ? 1 : Math.abs(offset) === 1 ? 0.82 : 0.68, rotate: Math.sign(offset) * (Math.abs(offset) === 1 ? 1.5 : 2) }} transition={{ duration: dragging || reduceMotion ? 0 : 0.62, ease: [0.22, 1, 0.36, 1] }}>
                     <Image src={`/media/collection/${encodeURIComponent(src)}`} alt={alt} fill sizes="(max-width: 700px) 66vw, 50vw" priority={index === photoIndex} quality={88} draggable={false} className="collection__image" />
                   </motion.figure>;
                 })}
@@ -146,7 +180,7 @@ export default function CollectionSection() {
                 </div>)}
               </div>
               <div className="collection__collage" aria-label="Фотографии изделий и деталей">
-                {detailPhotos.map(([src, alt], photoIndex) => <motion.button type="button" key={src} className={`collection__photo collection__photo--${photoIndex + 1}`} aria-label={`Открыть фотографию: ${alt}`} onClick={(event) => { lightboxOpener.current = event.currentTarget; setLightboxIndex(photoIndex); }} initial={{ opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.15 }} transition={{ duration: reduceMotion ? 0 : 0.55, delay: reduceMotion ? 0 : photoIndex * 0.055, ease: [0.22, 1, 0.36, 1] }}>
+                {detailPhotos.map(([src, alt], photoIndex) => <motion.button type="button" key={src} className={`collection__photo collection__photo--${photoIndex + 1}`} aria-label={`Открыть фотографию: ${alt}`} onClick={(event) => openLightbox("details", photoIndex, event.currentTarget)} initial={{ opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.15 }} transition={{ duration: reduceMotion ? 0 : 0.55, delay: reduceMotion ? 0 : photoIndex * 0.055, ease: [0.22, 1, 0.36, 1] }}>
                   <Image src={`/media/details/${src}`} alt={alt} fill sizes="(max-width: 700px) 45vw, 12vw" quality={88} className="collection__photo-image" />
                 </motion.button>)}
               </div>
@@ -155,10 +189,10 @@ export default function CollectionSection() {
         </AnimatePresence>
       </div>
       <AnimatePresence>
-        {lightboxIndex !== null && <motion.div ref={lightboxRef} className="collection__lightbox" role="dialog" aria-modal="true" aria-label="Просмотр фотографий изделий" tabIndex={-1} onClick={() => setLightboxIndex(null)} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: reduceMotion ? 0 : 0.22 }}>
+        {lightboxOpen && lightboxPhoto && <motion.div ref={lightboxRef} className="collection__lightbox" role="dialog" aria-modal="true" aria-label="Просмотр фотографий изделий" tabIndex={-1} onClick={closeLightbox} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: reduceMotion ? 0 : 0.22 }}>
           <div className="collection__lightbox-content" onClick={(event) => event.stopPropagation()}>
-            <button type="button" className="collection__lightbox-close" onClick={() => setLightboxIndex(null)} aria-label="Закрыть просмотр">×</button>
-            <button type="button" className="collection__lightbox-arrow collection__lightbox-arrow--previous" onClick={() => setLightboxIndex((current) => current === null ? null : (current - 1 + detailPhotos.length) % detailPhotos.length)} aria-label="Предыдущее фото">←</button>
+            <button type="button" className="collection__lightbox-close" style={{ "--lightbox-close-top": `${lightboxMediaFrame.top}px`, "--lightbox-close-right": `${lightboxMediaFrame.right}px` } as CSSProperties} onClick={closeLightbox} aria-label="Закрыть просмотр">×</button>
+            <button type="button" className="collection__lightbox-arrow collection__lightbox-arrow--previous" onClick={() => setLightboxIndex((current) => current === null ? null : (current - 1 + lightboxPhotos.length) % lightboxPhotos.length)} aria-label="Предыдущее фото">←</button>
             <div
               className="collection__lightbox-image"
               onTouchStart={(event) => {
@@ -169,13 +203,13 @@ export default function CollectionSection() {
                 lightboxTouchStartX.current = null;
                 if (startX === null || !window.matchMedia("(max-width: 700px)").matches) return;
                 const distance = event.changedTouches[0]?.clientX - startX;
-                if (distance > 50) setLightboxIndex((current) => current === null ? null : (current - 1 + detailPhotos.length) % detailPhotos.length);
-                if (distance < -50) setLightboxIndex((current) => current === null ? null : (current + 1) % detailPhotos.length);
+                if (distance > 50) setLightboxIndex((current) => current === null ? null : (current - 1 + lightboxPhotos.length) % lightboxPhotos.length);
+                if (distance < -50) setLightboxIndex((current) => current === null ? null : (current + 1) % lightboxPhotos.length);
               }}
             >
-              <Image src={`/media/details/${detailPhotos[lightboxIndex][0]}`} alt={detailPhotos[lightboxIndex][1]} fill sizes="94vw" quality={90} className="collection__lightbox-img" />
+              <Image ref={lightboxImageRef} src={`/media/${lightboxMode}/${encodeURIComponent(lightboxPhoto[0])}`} alt={lightboxPhoto[1]} fill sizes="94vw" quality={90} className="collection__lightbox-img" onLoad={(event) => updateLightboxMediaFrame(event.currentTarget)} />
             </div>
-            <button type="button" className="collection__lightbox-arrow collection__lightbox-arrow--next" onClick={() => setLightboxIndex((current) => current === null ? null : (current + 1) % detailPhotos.length)} aria-label="Следующее фото">→</button>
+            <button type="button" className="collection__lightbox-arrow collection__lightbox-arrow--next" onClick={() => setLightboxIndex((current) => current === null ? null : (current + 1) % lightboxPhotos.length)} aria-label="Следующее фото">→</button>
           </div>
         </motion.div>}
       </AnimatePresence>
